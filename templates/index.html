@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>10ª Compañía — Dashboard Integrado</title>
+
+<script src="https://icbs.cl/cuartel/js/jquery-1.12.2.min.js"></script>
+<script src="https://icbs.cl/cuartel/libreria.js"></script>
+<script src="https://icbs.cl/cuartel/js/crypto-js.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+<style>
+/* ═══════════════════════════════════════
+   VARIABLES & RESET
+═══════════════════════════════════════ */
+:root {
+  --bg:        #08090d;
+  --bg2:       #0c0f15;
+  --bg3:       #10141c;
+  --bg4:       #141922;
+  --border:    rgba(255,255,255,0.06);
+  --border2:   rgba(255,255,255,0.11);
+  --red:       #e8312a;
+  --red-glow:  rgba(232,49,42,0.35);
+  --red-dim:   rgba(232,49,42,0.12);
+  --amber:     #f59e0b;
+  --green:     #22c55e;
+  --blue:      #3b82f6;
+  --cyan:      #06b6d4;
+  --text1:     #eef0f5;
+  --text2:     #8494ad;
+  --text3:     #4a5568;
+  --mono:      'Share Tech Mono', monospace;
+  --sans:      'Barlow Condensed', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text1);
+  font-family: var(--sans);
+}
+
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,0.025) 0px, transparent 1px, transparent 4px);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+a { text-decoration: none; color: inherit; }
+
+/* ═══════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════ */
+#app {
+  display: grid;
+  grid-template-rows: 84px 1fr 34px;
+  grid-template-columns: 1fr 420px;
+  height: 100vh;
+}
+
+/* ═══════════════════════════════════════
+   HEADER
+═══════════════════════════════════════ */
+#header {
+  grid-column: 1 / 3;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 22px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border2);
+  position: relative;
+  z-index: 100;
+}
+
+#header::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--red) 20%, var(--red) 80%, transparent 100%);
+  opacity: 0.8;
+}
+
+/* Marca */
+.brand { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+
+.brand-badge {
+  width: 54px; height: 54px;
+  background: var(--red); border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 20px; font-weight: 700;
+  box-shadow: 0 0 18px var(--red-glow);
+}
+
+.brand-text .line1 { font-size: 22px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.1; }
+.brand-text .line2 { font-size: 14px; color: var(--text2); letter-spacing: 2px; text-transform: uppercase; font-family: var(--mono); }
+
+/* Barra de alerta */
+#alert-bar {
+  flex: 1;
+  display: flex; align-items: center; gap: 16px;
+  background: linear-gradient(90deg, var(--red-dim), rgba(232,49,42,0.06));
+  border: 1px solid rgba(232,49,42,0.32);
+  border-radius: 8px;
+  padding: 8px 20px;
+  overflow: hidden; position: relative; min-width: 0;
+}
+
+#alert-bar::before {
+  content: '';
+  position: absolute; left: -100%; top: 0; bottom: 0; width: 50%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+  animation: sweep 4s linear infinite;
+}
+
+@keyframes sweep { to { left: 200%; } }
+
+.alert-code {
+  font-family: var(--mono); font-size: 38px; font-weight: 700;
+  color: var(--red); letter-spacing: 4px;
+  text-shadow: 0 0 16px var(--red-glow);
+  animation: blink-text 2.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes blink-text { 0%,100%{opacity:1} 50%{opacity:.6} }
+
+.alert-sep { width: 2px; height: 38px; background: rgba(232,49,42,0.28); flex-shrink: 0; }
+
+.alert-addr { font-size: 24px; font-weight: 600; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.alert-city { font-size: 16px; color: var(--red); font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; flex-shrink: 0; }
+.alert-units { display: flex; gap: 8px; margin-left: auto; flex-shrink: 0; }
+
+.ubadge { font-family: var(--mono); font-size: 16px; padding: 6px 12px; border-radius: 6px; font-weight: 700; letter-spacing: 1px; white-space: nowrap; }
+.ubadge.sale { background: var(--red); color: #fff; }
+.ubadge.blue { background: rgba(59,130,246,0.18); border: 1px solid rgba(59,130,246,0.45); color: #93c5fd; }
+
+/* Lado derecho del header */
+.header-right { display: flex; align-items: center; gap: 24px; flex-shrink: 0; }
+
+/* Clima */
+.clima-blk { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.25; }
+.clima-temp { font-family: var(--mono); font-size: 30px; color: var(--amber); letter-spacing: 1px; }
+.clima-row  { display: flex; gap: 10px; align-items: center; }
+.clima-tag  { font-size: 13px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+.clima-val  { font-family: var(--mono); font-size: 13px; color: var(--text2); }
+.clima-ico  { font-size: 20px; }
+
+/* Reloj */
+.reloj {
+  font-family: var(--mono); font-size: 40px; letter-spacing: 4px; color: var(--text1);
+  border-left: 1px solid var(--border2); padding-left: 24px;
+}
+
+/* ═══════════════════════════════════════
+   MAPA
+═══════════════════════════════════════ */
+#mapa-wrap { grid-column: 1; grid-row: 2; position: relative; overflow: hidden; }
+#map { width: 100%; height: 100%; }
+
+.leaflet-tile-pane { filter: brightness(.78) saturate(.55) hue-rotate(190deg); }
+.leaflet-container { background: #0e1420 !important; }
+.leaflet-control-zoom, .leaflet-control-attribution { display: none !important; }
+
+.map-overlay { position: absolute; top: 16px; left: 16px; z-index: 500; display: flex; flex-direction: column; gap: 8px; }
+
+.mstat {
+  background: rgba(8,9,13,0.9); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 10px 16px;
+  backdrop-filter: blur(14px);
+  display: flex; align-items: center; gap: 12px;
+}
+
+.mstat-ico { width: 34px; height: 34px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.mstat-ico.r { background: var(--red-dim); }
+.mstat-ico.b { background: rgba(59,130,246,0.14); }
+.mstat-ico.g { background: rgba(34,197,94,0.14); }
+
+.mstat-lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 1.5px; font-family: var(--mono); }
+.mstat-val { font-size: 18px; font-weight: 700; color: var(--text1); margin-top: 2px;}
+.mstat-val.red   { color: var(--red); }
+.mstat-val.green { color: var(--green); }
+
+/* ═══════════════════════════════════════
+   PANEL LATERAL
+═══════════════════════════════════════ */
+#side {
+  grid-column: 2; grid-row: 2;
+  background: var(--bg2); border-left: 1px solid var(--border2);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+
+.sec-hdr {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 18px; border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.012); flex-shrink: 0;
+}
+
+.sec-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.sec-dot.r { background: var(--red);   box-shadow: 0 0 7px var(--red); }
+.sec-dot.g { background: var(--green); box-shadow: 0 0 7px var(--green); }
+.sec-dot.b { background: var(--blue);  box-shadow: 0 0 7px var(--blue); }
+.sec-dot.a { background: var(--amber); box-shadow: 0 0 7px var(--amber); animation: blink-dot 1.4s infinite; }
+@keyframes blink-dot { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.sec-title { font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text2); font-family: var(--mono); }
+.sec-count { margin-left: auto; font-family: var(--mono); font-size: 14px; color: var(--text3); }
+
+/* ── Carros ── */
+#carros-wrap { flex-shrink: 0; }
+
+#set_carros_ui { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px 16px; }
+
+.carro-card {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px 14px;
+  display: flex; align-items: center; gap: 10px;
+  position: relative; overflow: hidden;
+  transition: all .2s;
+}
+
+.carro-card::before {
+  content: ''; position: absolute;
+  left: 0; top: 0; bottom: 0; width: 4px;
+  border-radius: 8px 0 0 8px;
+}
+
+.carro-card.verde::before  { background: var(--green); box-shadow: 2px 0 8px rgba(34,197,94,0.6); }
+.carro-card.rojo::before   { background: var(--red);   box-shadow: 2px 0 8px rgba(232,49,42,0.6); }
+.carro-card.naranja::before{ background: var(--amber); box-shadow: 2px 0 8px rgba(245,158,11,0.6); }
+.carro-card.celeste::before{ background: var(--cyan);  box-shadow: 2px 0 8px rgba(6,182,212,0.6); }
+.carro-card.gris::before   { background: var(--text3); }
+
+/* Fondo sutil de la card según estado */
+.carro-card.verde  { background: rgba(34,197,94,0.07);  border-color: rgba(34,197,94,0.2); }
+.carro-card.rojo   { background: rgba(232,49,42,0.07);  border-color: rgba(232,49,42,0.2); }
+.carro-card.naranja{ background: rgba(245,158,11,0.07); border-color: rgba(245,158,11,0.2); }
+.carro-card.celeste{ background: rgba(6,182,212,0.07);  border-color: rgba(6,182,212,0.2); }
+
+.carro-id { font-family: var(--mono); font-size: 24px; font-weight: 700; letter-spacing: 1px; }
+.carro-id.verde  { color: var(--green);  text-shadow: 0 0 10px rgba(34,197,94,0.5); }
+.carro-id.rojo   { color: var(--red);    text-shadow: 0 0 10px rgba(232,49,42,0.5); }
+.carro-id.naranja{ color: var(--amber);  text-shadow: 0 0 10px rgba(245,158,11,0.5); }
+.carro-id.celeste{ color: var(--cyan);   text-shadow: 0 0 10px rgba(6,182,212,0.5); }
+.carro-id.gris   { color: var(--text3); }
+
+.carro-info { flex: 1; min-width: 0; }
+.carro-estado { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; }
+.carro-estado.verde  { color: var(--green); }
+.carro-estado.rojo   { color: var(--red); }
+.carro-estado.naranja{ color: var(--amber); }
+.carro-estado.celeste{ color: var(--cyan); }
+.carro-estado.gris   { color: var(--text3); }
+.carro-conductor { font-size: 12px; color: var(--text3); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.carro-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.carro-dot.verde  { background: var(--green); box-shadow: 0 0 6px var(--green); animation: blink-dot 1.8s infinite; }
+.carro-dot.rojo   { background: var(--red);   box-shadow: 0 0 6px var(--red);   animation: blink-dot 1.0s infinite; }
+.carro-dot.naranja{ background: var(--amber); box-shadow: 0 0 6px var(--amber); animation: blink-dot 1.4s infinite; }
+.carro-dot.celeste{ background: var(--cyan);  box-shadow: 0 0 6px var(--cyan);  animation: blink-dot 1.6s infinite; }
+.carro-dot.gris   { background: var(--text3); }
+
+/* ── Personal (CORRECCIÓN APLICADA AQUÍ) ── */
+#personal-wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+
+.personal-stats {
+  display: flex; align-items: center; gap: 18px;
+  padding: 10px 18px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.pstat { display: flex; align-items: baseline; gap: 6px; }
+.pstat-num { font-family: var(--mono); font-size: 28px; font-weight: 700; line-height: 1; }
+.pstat-num.w { color: var(--text1); }
+.pstat-num.g { color: var(--green); }
+.pstat-num.r { color: var(--red); }
+.pstat-lbl { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+.pstat-sep { width: 1px; height: 22px; background: var(--border); }
+
+#div_gente_ui {
+  flex: 1; overflow-y: auto; padding: 12px 16px;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: max-content; /* Fuerza a la grilla a respetar la altura del contenido */
+  gap: 8px; align-content: start;
+  scrollbar-width: thin; scrollbar-color: var(--border2) transparent;
+}
+
+.persona-card {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden;
+  transition: all .2s; cursor: pointer;
+  display: flex; flex-direction: column; /* Fuerza estructura vertical segura */
+}
+
+.persona-card:hover {
+  border-color: var(--border2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0,0,0,.45);
+}
+
+.persona-foto {
+  width: 100%; aspect-ratio: 1;
+  background: linear-gradient(135deg, #141c2a 0%, #0c1220 100%);
+  position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; /* Evita que el navegador comprima la foto */
+}
+.persona-foto img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.persona-foto-ico { font-size: 32px; opacity: .25; }
+
+.persona-sdot {
+  position: absolute; top: 6px; right: 6px;
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid var(--bg3);
+}
+.persona-sdot.disponible    { background: var(--green); }
+.persona-sdot.no-disponible { background: var(--red); }
+.persona-sdot.en-llamado    { background: var(--amber); }
+.persona-sdot.en-curso      { background: var(--cyan); }
+.persona-sdot.conductor     { background: var(--text2); }
+
+.persona-body { padding: 6px 8px 8px; }
+.persona-nombre { font-size: 12px; font-weight: 700; letter-spacing: .3px; text-transform: uppercase; color: var(--text1); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.persona-calidad { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .4px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.persona-badge { display: inline-block; margin-top: 5px; font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+.pb-disponible    { background: rgba(34,197,94,.14);  color: var(--green); }
+.pb-no-disponible { background: var(--red-dim);        color: var(--red); }
+.pb-en-llamado    { background: rgba(245,158,11,.14);  color: var(--amber); }
+.pb-en-curso      { background: rgba(6,182,212,.14);   color: var(--cyan); }
+.pb-conductor     { background: rgba(148,163,184,.1);  color: var(--text2); }
+
+.persona-vacia { background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.04); border-radius: 8px; aspect-ratio: 1; }
+
+/* ── Llamados ── */
+#llamados-wrap { flex-shrink: 0; border-top: 1px solid var(--border); }
+
+#set_llamados_ui { display: flex; flex-direction: column; gap: 6px; padding: 10px 16px; }
+
+.llamado-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 12px; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 6px; transition: all .15s;
+}
+.llamado-item.activo { border-color: rgba(232,49,42,.28); background: rgba(232,49,42,.05); }
+.llamado-item:hover { background: var(--bg4); }
+
+.llamado-time { font-family: var(--mono); font-size: 12px; color: var(--text3); white-space: nowrap; padding-top: 2px; line-height: 1.5; }
+.llamado-det { flex: 1; min-width: 0; }
+.llamado-code { font-family: var(--mono); font-size: 16px; font-weight: 700; color: var(--red); letter-spacing: 1px; }
+.llamado-addr { font-size: 14px; color: var(--text2); margin-top: 2px; letter-spacing: .3px; }
+.llamado-units { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+.lunit { font-size: 12px; font-family: var(--mono); padding: 2px 6px; background: rgba(59,130,246,.12); border: 1px solid rgba(59,130,246,.28); color: #93c5fd; border-radius: 4px; }
+
+/* ── Novedades ── */
+#novedades-wrap { flex-shrink: 0; border-top: 1px solid var(--border); }
+
+#set_manual_ui { padding: 8px 16px 12px; display: flex; flex-direction: column; gap: 6px; }
+
+.novedad-item { display: flex; gap: 10px; padding: 8px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; }
+.novedad-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); margin-top: 6px; flex-shrink: 0; }
+.novedad-content { flex: 1; min-width: 0; }
+.novedad-fecha { font-family: var(--mono); font-size: 12px; color: var(--text3); }
+.novedad-texto { font-size: 14px; color: var(--text2); line-height: 1.45; margin-top: 2px; }
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+#footer {
+  grid-column: 1 / 3; grid-row: 3;
+  background: var(--bg2); border-top: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 20px; gap: 24px;
+}
+
+.fstat { display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 12px; color: var(--text3); letter-spacing: .5px; }
+.fdot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.fdot.g { background: var(--green); }
+.fdot.r { background: var(--red); animation: blink-dot 1.4s infinite; }
+.fdot.a { background: var(--amber); }
+.fsep { width: 1px; height: 16px; background: var(--border); }
+
+#footer-fecha { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--text3); }
+
+/* ── Indicador SSE ── */
+#sse-status { transition: color .4s; }
+#sse-dot    { transition: background .4s; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ── Mensaje flotante ── */
+#msg-flotante {
+  display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 9998;
+  padding: 14px; text-align: center; font-size: 26px; font-weight: 700; letter-spacing: 1px; color: #fff;
+}
+
+/* ── Flash de actualización ── */
+@keyframes flash-update { 0%{background:rgba(34,197,94,.25)} 100%{background:transparent} }
+.updated { animation: flash-update .8s ease; }
+</style>
+</head>
+<body>
+
+<div id="msg-flotante"></div>
+
+<div id="app">
+
+  <header id="header">
+    <div class="brand">
+      <div class="brand-badge">10ª</div>
+      <div class="brand-text">
+        <div class="line1">Cuerpo de Bomberos · Santiago</div>
+        <div class="line2">SIAC · Emergenci — Sistema Integrado</div>
+      </div>
+    </div>
+
+    <div id="alert-bar">
+      <div class="alert-code" id="alerta-codigo">—</div>
+      <div class="alert-sep"></div>
+      <div class="alert-addr" id="alerta-dir">Cargando emergencia…</div>
+      <div class="alert-city" id="alerta-ciudad"></div>
+      <div class="alert-units" id="alerta-vehiculos"></div>
+    </div>
+
+    <div class="header-right">
+      <div class="clima-blk">
+        <div class="clima-temp"><span id="hdr-temp">—</span>°</div>
+        <div class="clima-row">
+          <span class="clima-ico" id="hdr-ico">🌤</span>
+          <span class="clima-tag">hum</span><span class="clima-val"><span id="hdr-hum">—</span>%</span>
+          <span class="clima-tag">↓</span><span class="clima-val" id="hdr-min">—</span>°
+          <span class="clima-tag">↑</span><span class="clima-val" id="hdr-max">—</span>°
+        </div>
+      </div>
+      <div class="reloj" id="reloj">00:00:00</div>
+    </div>
+  </header>
+
+  <div id="mapa-wrap">
+    <div id="map"></div>
+    <div class="map-overlay">
+      <div class="mstat">
+        <div class="mstat-ico r"><i class="fa fa-fire"></i></div>
+        <div>
+          <div class="mstat-lbl">Incidente activo</div>
+          <div class="mstat-val red" id="ov-codigo">—</div>
+        </div>
+      </div>
+      <div class="mstat">
+        <div class="mstat-ico b"><i class="fa fa-truck"></i></div>
+        <div>
+          <div class="mstat-lbl">Unidades despachadas</div>
+          <div class="mstat-val" id="ov-unidades">—</div>
+        </div>
+      </div>
+      <div class="mstat">
+        <div class="mstat-ico g"><i class="fa fa-map-marker-alt"></i></div>
+        <div>
+          <div class="mstat-lbl">Destino</div>
+          <div class="mstat-val green" id="ov-dir" style="font-size:14px;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
+        </div>
+      </div>
+      <div class="mstat" id="ov-dist-wrap" style="display:none;">
+        <div class="mstat-ico b"><i class="fa fa-road"></i></div>
+        <div>
+          <div class="mstat-lbl">Distancia · Tiempo estimado</div>
+          <div class="mstat-val" id="ov-dist" style="font-size:16px;">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <aside id="side">
+
+    <div id="carros-wrap">
+      <div class="sec-hdr">
+        <div class="sec-dot g"></div>
+        <div class="sec-title">Carros en Servicio</div>
+        <div class="sec-count" id="carros-count">—</div>
+      </div>
+      <div id="set_carros_ui">
+        <div class="carro-card gris">
+          <div class="carro-id gris">—</div>
+          <div class="carro-info"><div class="carro-estado gris">Cargando…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="personal-wrap">
+      <div class="sec-hdr">
+        <div class="sec-dot g"></div>
+        <div class="sec-title">Personal en Cuartel</div>
+      </div>
+      <div class="personal-stats">
+        <div class="pstat"><div class="pstat-num w" id="stat-total">—</div><div class="pstat-lbl">Total</div></div>
+        <div class="pstat-sep"></div>
+        <div class="pstat"><div class="pstat-num g" id="stat-disponibles">—</div><div class="pstat-lbl">Disponibles</div></div>
+        <div class="pstat-sep"></div>
+        <div class="pstat"><div class="pstat-num r" id="stat-no-disp">—</div><div class="pstat-lbl">No disp.</div></div>
+      </div>
+      <div id="div_gente_ui"></div>
+    </div>
+
+    <div id="llamados-wrap">
+      <div class="sec-hdr">
+        <div class="sec-dot a"></div>
+        <div class="sec-title">Últimos Llamados</div>
+      </div>
+      <div id="set_llamados_ui">
+        <div class="llamado-item"><div class="llamado-det" style="color:var(--text3);font-size:14px;">Cargando…</div></div>
+      </div>
+    </div>
+
+    <div id="novedades-wrap">
+      <div class="sec-hdr">
+        <div class="sec-dot b"></div>
+        <div class="sec-title">Novedades</div>
+      </div>
+      <div id="set_manual_ui">
+        <div class="novedad-item"><div class="novedad-texto" style="color:var(--text3);font-size:14px;">Cargando…</div></div>
+      </div>
+    </div>
+
+  </aside>
+
+  <footer id="footer">
+    <div class="fstat"><div class="fdot g"></div>SIAC</div>
+    <div class="fsep"></div>
+    <div class="fstat" id="fstat-emergencia"><div class="fdot r"></div>EMERGENCIA ACTIVA</div>
+    <div class="fsep"></div>
+    <div class="fstat">
+      <div class="fdot a" id="sse-dot"></div>
+      <span id="sse-status">CONECTANDO…</span>
+    </div>
+    <div class="fsep"></div>
+    <div class="fstat"><div class="fdot g"></div>GPS</div>
+    <div id="footer-fecha"></div>
+  </footer>
+
+</div>
+
+<input id="registro" type="text" autocomplete="off"
+       style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0"/>
+
+<script>
+/* ════════════════════════════════════════
+   CONFIGURACIÓN
+════════════════════════════════════════ */
+const UNIDAD_LAT = -33.45798;
+const UNIDAD_LON = -70.641;
+
+const BADGE_CLASE = {
+  'disponible':    'pb-disponible',
+  'no-disponible': 'pb-no-disponible',
+  'en-llamado':    'pb-en-llamado',
+  'en-curso':      'pb-en-curso',
+  'conductor':     'pb-conductor',
+};
+const BADGE_TEXT = {
+  'disponible':    'Disponible',
+  'no-disponible': 'No disponible',
+  'en-llamado':    'En Llamado',
+  'en-curso':      'En Curso',
+  'conductor':     'Conductor',
+};
+const ICONOS_CLIMA = {
+  'clear-day':'☀️','clear-night':'🌙','partly-cloudy-day':'⛅','partly-cloudy-night':'🌤',
+  'cloudy':'☁️','rain':'🌧','snow':'❄️','sleet':'🌨','wind':'💨','fog':'🌫',
+  'thunder-rain':'⛈','thunder-showers-day':'🌩','thunder-showers-night':'🌩',
+};
+
+/* ════════════════════════════════════════
+   UTILIDADES
+════════════════════════════════════════ */
+function pad2(n){ return n<10?'0'+n:''+n; }
+
+function colorClass(hex) {
+  const m = {
+    '#e5222d':'rojo','#E5222D':'rojo',
+    '#1a191a':'verde','#1A191A':'verde',
+    '#ff9322':'naranja','#FF9322':'naranja',
+    '#39c':'celeste','#39C':'celeste',
+    '#ccc':'gris','#CCC':'gris'
+  };
+  return m[hex] || 'gris';
+}
+
+function claseEstadoCarro(estadoNombre) {
+  if (!estadoNombre) return 'gris';
+  var t = estadoNombre.toUpperCase();
+  if (t.includes('SERVICIO') || t.includes('DISPONIBLE'))   return 'verde';
+  if (t.includes('LLAMADO') || t.includes('CURSO'))         return 'naranja';
+  if (t.includes('FUERA')   || t.includes('NO DISP') ||
+      t.includes('INACTIV') || t.includes('TALLER'))        return 'rojo';
+  return 'gris';
+}
+
+function estadoSlug(v) {
+  return ['no-disponible','disponible','en-llamado','en-curso','conductor'][v] || 'no-disponible';
+}
+
+function flashEl(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('updated');
+  void el.offsetWidth;
+  el.classList.add('updated');
+}
+
+/* ════════════════════════════════════════
+   RELOJ
+════════════════════════════════════════ */
+const DIAS  = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+function tickReloj() {
+  var now = new Date();
+  document.getElementById('reloj').textContent =
+    pad2(now.getHours())+':'+pad2(now.getMinutes())+':'+pad2(now.getSeconds());
+  document.getElementById('footer-fecha').textContent =
+    DIAS[now.getDay()]+' '+now.getDate()+' de '+MESES[now.getMonth()]+' de '+now.getFullYear();
+}
+setInterval(tickReloj, 1000);
+tickReloj();
+
+/* ════════════════════════════════════════
+   MAPA LEAFLET
+════════════════════════════════════════ */
+var styleAnim = document.createElement('style');
+styleAnim.textContent = '@keyframes pmap{0%{box-shadow:0 0 0 5px rgba(232,49,42,0.5),0 0 28px rgba(232,49,42,0.9)}50%{box-shadow:0 0 0 18px rgba(232,49,42,0.03),0 0 40px rgba(232,49,42,0.4)}100%{box-shadow:0 0 0 5px rgba(232,49,42,0.5),0 0 28px rgba(232,49,42,0.9)}}';
+document.head.appendChild(styleAnim);
+
+var map = L.map('map', {
+  zoomControl: false, attributionControl: false,
+  dragging: true, scrollWheelZoom: true
+}).setView([UNIDAD_LAT, UNIDAD_LON], 15);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19 }).addTo(map);
+
+var icoBase = L.divIcon({
+  className: '',
+  iconSize:   [44, 44],
+  iconAnchor: [22, 44],
+  html: '<div style="width:40px;height:40px;background:#e8312a;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid rgba(255,255,255,0.6);box-shadow:0 0 20px rgba(232,49,42,0.8);display:flex;align-items:center;justify-content:center;"><span style="transform:rotate(45deg);font-size:18px;">🏠</span></div>'
+});
+
+var icoEmerg = L.divIcon({
+  className: '',
+  iconSize:   [52, 52],
+  iconAnchor: [26, 26],
+  html: '<div style="width:48px;height:48px;background:#e8312a;border-radius:50%;border:3px solid #ffffff;box-shadow:0 0 0 5px rgba(232,49,42,0.4),0 0 30px rgba(232,49,42,0.9);display:flex;align-items:center;justify-content:center;animation:pmap 1.5s ease-in-out infinite;"><svg width=\'22\' height=\'22\' viewBox=\'0 0 24 24\' fill=\'white\'><path d=\'M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z\'/></svg></div>'
+});
+
+
+var markerBase  = L.marker([UNIDAD_LAT, UNIDAD_LON], {icon:icoBase}).addTo(map);
+var markerEmerg = L.marker([UNIDAD_LAT, UNIDAD_LON], {icon:icoEmerg}).addTo(map);
+markerBase.bindTooltip('10ª Compañía', {direction:'top', offset:[0,-30]});
+
+var rutaMapa = L.polyline([], {
+  color: '#e8312a', weight: 5, opacity: 1,
+  lineCap: 'round', lineJoin: 'round'
+}).addTo(map);
+
+var rutaRespaldo = L.polyline([], {
+  color: '#e8312a', weight: 4,
+  opacity: 0.5, dashArray: '10, 8',
+  lineCap: 'round'
+}).addTo(map);
+
+var ultimaPosMapa = '';
+var ultimaRutaKey = '';
+
+function moverMapa(lat, lon, codigo, dir) {
+  var key = lat + ',' + lon;
+  if (key === ultimaPosMapa) return;
+  ultimaPosMapa = key;
+
+  markerEmerg.setLatLng([lat, lon]);
+  markerEmerg.bindTooltip(codigo + ' — ' + dir, {direction:'top', offset:[0,-14]});
+
+  rutaRespaldo.setLatLngs([[UNIDAD_LAT, UNIDAD_LON], [lat, lon]]);
+  rutaMapa.setLatLngs([]);
+
+  var bounds = L.latLngBounds(
+    [UNIDAD_LAT, UNIDAD_LON],
+    [lat, lon]
+  );
+  map.fitBounds(bounds, {padding: [80, 80], maxZoom: 16});
+
+  var rutaKey = UNIDAD_LAT + ',' + UNIDAD_LON + '>' + lat + ',' + lon;
+  if (rutaKey === ultimaRutaKey) return;
+  ultimaRutaKey = rutaKey;
+
+  var osrmUrl = 'https://router.project-osrm.org/route/v1/driving/'
+    + UNIDAD_LON + ',' + UNIDAD_LAT + ';'
+    + lon + ',' + lat
+    + '?overview=full&geometries=geojson';
+
+  fetch(osrmUrl)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (!data || !data.routes || !data.routes.length) {
+        console.warn('[OSRM] Sin rutas, manteniendo línea directa');
+        return;
+      }
+      var route  = data.routes[0];
+      var coords = route.geometry.coordinates.map(function(c) {
+        return [c[1], c[0]];
+      });
+
+      rutaMapa.setLatLngs(coords);
+      rutaRespaldo.setLatLngs([]); 
+
+      var distKm  = (route.distance / 1000).toFixed(1);
+      var minutos = Math.ceil(route.duration / 60);
+      $('#ov-dist').text(distKm + ' km · ~' + minutos + ' min');
+      $('#ov-dist-wrap').show();
+
+      map.fitBounds(rutaMapa.getBounds(), {padding: [70, 70], maxZoom: 16});
+    })
+    .catch(function(err) {
+      console.warn('[OSRM] Error:', err, '— manteniendo línea directa');
+    });
+}
+
+/* ════════════════════════════════════════
+   RENDER PERSONAL
+════════════════════════════════════════ */
+var total_todos = 0;
+
+function renderPersonal(data) {
+  var disponibles = parseInt(data.disponibles) || 0;
+  $('#stat-disponibles').text(disponibles);
+
+  var $grid = $('#div_gente_ui');
+  $grid.html('');
+
+  if (typeof data.bomberos !== 'object' || !data.bomberos) {
+    $('#stat-total').text(0); $('#stat-no-disp').text(0);
+    return;
+  }
+
+  total_todos = data.bomberos.length;
+  $('#stat-total').text(total_todos);
+  $('#stat-no-disp').text(total_todos - disponibles);
+
+  var maxFotos = 24;
+  var a = 0;
+
+  $.each(data.bomberos, function(i, p) {
+    var slug  = estadoSlug(p.disponible);
+    var badge = BADGE_CLASE[slug] || 'pb-disponible';
+    var btext = BADGE_TEXT[slug] || 'Disponible';
+
+    var fotoHtml = (total_todos <= maxFotos && p.foto)
+      ? '<img src="'+p.foto+'" alt="'+p.nombre+'" onerror="this.style.display=\'none\'"/>'
+      : '<span class="persona-foto-ico">👤</span>';
+
+    $grid.append(
+      '<div class="persona-card" data-idx="'+a+'" onclick="cambiarEstado('+a+',\''+p.id_bombero+'\',\''+p.id_personas_extra+'\')">'+
+        '<div class="persona-foto">'+fotoHtml+'<div class="persona-sdot '+slug+'" id="sdot'+a+'"></div></div>'+
+        '<div class="persona-body">'+
+          '<div class="persona-nombre">'+p.nombre+'</div>'+
+          '<div class="persona-calidad">'+(p.calidad||'—')+'</div>'+
+          '<input type="hidden" id="estado'+a+'" value="'+p.disponible+'"/>'+
+          '<div class="persona-badge '+badge+'" id="pbadge'+a+'">'+btext+'</div>'+
+        '</div>'+
+      '</div>'
+    );
+    a++;
+  });
+
+  var vacios = Math.max(0, Math.min(8, maxFotos - total_todos));
+  for (var v = 0; v < vacios; v++) $grid.append('<div class="persona-vacia"></div>');
+
+  flashEl('div_gente_ui');
+}
+
+/* ════════════════════════════════════════
+   CAMBIAR ESTADO
+════════════════════════════════════════ */
+function cambiarEstado(i, id_bombero, id_personas_extra) {
+  if (!id_bombero || id_bombero === 'undefined') return;
+  var estado = ($('#estado'+i).val() * 1 + 1);
+  if (estado > 4) estado = 0;
+
+  var slug  = estadoSlug(estado);
+  $('#estado'+i).val(estado);
+  $('#sdot'+i).attr('class', 'persona-sdot '+slug);
+  $('#pbadge'+i).attr('class', 'persona-badge '+BADGE_CLASE[slug]).text(BADGE_TEXT[slug]);
+  actualizarTotales();
+
+  $.getJSON('/api/cambiar_estado?id_bombero='+id_bombero+'&id_personas_extra='+id_personas_extra+'&estado='+estado)
+    .fail(function(){ console.warn('Error al cambiar estado'); });
+}
+
+function actualizarTotales() {
+  var disp = 0;
+  for (var i = 0; i < total_todos; i++) {
+    if ($('#estado'+i).val() * 1 === 1) disp++;
+  }
+  $('#stat-disponibles').text(disp);
+  $('#stat-no-disp').text(total_todos - disp);
+}
+
+/* ════════════════════════════════════════
+   RENDER EMERGENCIA
+════════════════════════════════════════ */
+function renderEmergencia(data) {
+  renderCarros(data.carros);
+  renderLlamados(data.llamados, data.coordenadas_exactas);
+  renderNovedades(data.manual);
+}
+
+function renderCarros(carros) {
+  var $ui = $('#set_carros_ui');
+  $ui.html('');
+  if (!carros) { $('#carros-wrap').hide(); return; }
+  $('#carros-wrap').show();
+  var cantidad = Object.keys(carros).length;
+  $('#carros-count').text(cantidad + ' activos');
+
+  $.each(carros, function(i, c) {
+    var cls = claseEstadoCarro(c.estado_nombre);
+    $ui.append(
+      '<div class="carro-card '+cls+'">'+
+        '<div class="carro-id '+cls+'">'+c.nombre+'</div>'+
+        '<div class="carro-info">'+
+          '<div class="carro-estado '+cls+'">'+c.estado_nombre+'</div>'+
+          '<div class="carro-conductor">'+(c.conductor||'')+'</div>'+
+        '</div>'+
+        '<div class="carro-dot '+cls+'"></div>'+
+      '</div>'
+    );
+  });
+  flashEl('set_carros_ui');
+}
+
+function parsearLlamado(texto) {
+  if (!texto) return {codigo:'', dir:'', unidades:''};
+  var partes = texto.split(' ');
+  var codigo = partes[0] || '';
+  var regexU = /([A-Z]+\d+(?:,\s*[A-Z]+\d+)*)$/;
+  var matchU = texto.match(regexU);
+  var unidades = '', dir = '';
+  if (matchU) {
+    unidades = matchU[1];
+    dir = texto.replace(codigo,'').replace(matchU[1],'').trim();
+  } else {
+    dir = texto.replace(codigo,'').trim();
+  }
+  return {codigo:codigo, dir:dir, unidades:unidades};
+}
+
+function renderLlamados(llamados, coordExactas) {
+  var $ui = $('#set_llamados_ui');
+  $ui.html('');
+
+  if (!llamados || llamados.length < 1) {
+    $ui.html('<div class="llamado-item"><div class="llamado-det" style="color:var(--text3);font-size:14px;">Sin llamados recientes</div></div>');
+    $('#alerta-codigo').text('—');
+    $('#alerta-dir').text('Sin emergencia activa');
+    $('#alerta-ciudad').text('');
+    $('#alerta-vehiculos').html('');
+    return;
+  }
+
+  var ul = parsearLlamado(llamados[0].texto);
+  $('#alerta-codigo').text(ul.codigo);
+  $('#alerta-dir').text(ul.dir);
+  $('#ov-codigo').text(ul.codigo);
+  $('#ov-dir').text(ul.dir);
+  $('#ov-unidades').text(ul.unidades ? ul.unidades.split(',').length+' carros' : '0 carros');
+
+  var badgesHeader = '';
+  if (ul.unidades) {
+    ul.unidades.split(',').forEach(function(u) {
+      var cls = u.trim().includes('10') ? 'sale' : 'blue';
+      badgesHeader += '<span class="ubadge '+cls+'">'+u.trim()+'</span>';
+    });
+  }
+  $('#alerta-vehiculos').html(badgesHeader);
+
+  if (coordExactas && coordExactas.lat && coordExactas.lon) {
+    moverMapa(parseFloat(coordExactas.lat), parseFloat(coordExactas.lon), ul.codigo, ul.dir);
+  }
+
+  $.each(llamados, function(i, l) {
+    var p = parsearLlamado(l.texto);
+    var badges = '';
+    if (p.unidades) {
+      p.unidades.split(',').forEach(function(u){ badges += '<span class="lunit">'+u.trim()+'</span>'; });
+    }
+    var fecha = l.fecha ? l.fecha.replace(' ','<br/>') : '—';
+    $ui.append(
+      '<div class="llamado-item'+(i===0?' activo':'')+'">'+
+        '<div class="llamado-time">'+fecha+'</div>'+
+        '<div class="llamado-det">'+
+          '<div class="llamado-code">'+p.codigo+'</div>'+
+          '<div class="llamado-addr">'+p.dir+'</div>'+
+          (badges ? '<div class="llamado-units">'+badges+'</div>' : '')+
+        '</div>'+
+      '</div>'
+    );
+  });
+}
+
+function renderNovedades(manual) {
+  var $ui = $('#set_manual_ui');
+  $ui.html('');
+  if (!manual || manual.length < 1) {
+    $ui.html('<div class="novedad-item"><div class="novedad-texto" style="color:var(--text3);font-size:14px;">Sin novedades</div></div>');
+    return;
+  }
+  $.each(manual, function(i, m) {
+    $ui.append(
+      '<div class="novedad-item">'+
+        '<div class="novedad-dot"></div>'+
+        '<div class="novedad-content">'+
+          '<div class="novedad-fecha">'+(m.fecha||'')+'</div>'+
+          '<div class="novedad-texto">'+(m.descripcion||'')+'</div>'+
+        '</div>'+
+      '</div>'
+    );
+  });
+}
+
+/* ════════════════════════════════════════
+   CLIMA
+════════════════════════════════════════ */
+function cargarClima() {
+  $.getJSON('/api/clima', function(data) {
+    try {
+      var min = data['days'][0]['tempmin'];
+      var max = data['days'][0]['tempmax'];
+      var cc  = data['currentConditions'];
+      $('#hdr-temp').text(cc['temp']);
+      $('#hdr-hum').text(cc['humidity']);
+      $('#hdr-min').text(min);
+      $('#hdr-max').text(max);
+      var ico = ICONOS_CLIMA[cc['icon']] || '🌤';
+      $('#hdr-ico').text(ico);
+    } catch(e) {}
+  });
+}
+
+/* ════════════════════════════════════════
+   SSE — TIEMPO REAL
+════════════════════════════════════════ */
+var sseConectado = false;
+var pollingIds   = [];
+
+function setSSEStatus(ok, texto) {
+  sseConectado = ok;
+  $('#sse-dot').css('background', ok ? 'var(--green)' : 'var(--amber)');
+  $('#sse-status').text(texto || (ok ? 'TIEMPO REAL' : 'POLLING'));
+}
+
+function iniciarSSE() {
+  if (!window.EventSource) {
+    console.warn('EventSource no disponible, usando polling.');
+    iniciarPolling();
+    return;
+  }
+
+  var es = new EventSource('/api/stream');
+
+  es.addEventListener('open', function() {
+    setSSEStatus(true, 'TIEMPO REAL');
+    pollingIds.forEach(function(id){ clearInterval(id); });
+    pollingIds = [];
+  });
+
+  es.addEventListener('personal', function(e) {
+    try { renderPersonal(JSON.parse(e.data)); } catch(ex) {}
+  });
+
+  es.addEventListener('emergencia', function(e) {
+    try { renderEmergencia(JSON.parse(e.data)); } catch(ex) {}
+  });
+
+  es.addEventListener('error', function() {
+    setSSEStatus(false, 'RECONECTANDO…');
+    if (pollingIds.length === 0) iniciarPolling();
+  });
+}
+
+function iniciarPolling() {
+  setSSEStatus(false, 'POLLING 10S');
+  pollingIds.forEach(function(id){ clearInterval(id); });
+  pollingIds = [];
+
+  $.getJSON('/api/personal', function(d){ renderPersonal(d); });
+  $.getJSON('/api/emergencia', function(d){ renderEmergencia(d); });
+
+  pollingIds.push(setInterval(function(){
+    $.getJSON('/api/emergencia', function(d){ renderEmergencia(d); });
+  }, 10000));
+
+  pollingIds.push(setInterval(function(){
+    $.getJSON('/api/personal', function(d){ renderPersonal(d); });
+  }, 15000));
+}
+
+/* ════════════════════════════════════════
+   REGISTRO (lector / teclado)
+════════════════════════════════════════ */
+$(document).ready(function() {
+  $('#registro').on('keypress', function(e) {
+    if (e.which === 13 && $(this).val().length > 0) {
+      $(this).prop('disabled', true);
+      $.ajax({
+        type:'POST', url:'/api/registro', timeout:20000,
+        data:{'registro': $(this).val()},
+        success: function(data) {
+          if (data.msg && data.msg !== '') mostrarMensaje(data.msg, 'error');
+        }
+      });
+      $(this).val('');
+      setTimeout(function(){ $('#registro').prop('disabled',false).focus(); }, 1000);
+    }
+  });
+  $('#registro').focus();
+});
+
+/* ════════════════════════════════════════
+   MENSAJES UI
+════════════════════════════════════════ */
+function mostrarMensaje(texto, tipo) {
+  var $m = $('#msg-flotante');
+  $m.css('background', tipo === 'error' ? '#e8312a' : '#005A92');
+  $m.text(texto).show();
+  setTimeout(function(){ $m.fadeOut(800); }, 4500);
+}
+
+/* ════════════════════════════════════════
+   INICIO
+════════════════════════════════════════ */
+(function init() {
+  cargarClima();
+  setInterval(cargarClima, 10 * 60 * 1000);
+  iniciarSSE();
+  setInterval(function(){ location.reload(); }, 6 * 60 * 60 * 1000);
+})();
+</script>
+</body>
+</html>
