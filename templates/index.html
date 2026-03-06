@@ -92,9 +92,7 @@ a { text-decoration: none; color: inherit; }
   opacity: 0.8;
 }
 
-/* Marca */
 .brand { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
-
 .brand-badge {
   width: 54px; height: 54px;
   background: var(--red); border-radius: 9px;
@@ -102,11 +100,9 @@ a { text-decoration: none; color: inherit; }
   font-family: var(--mono); font-size: 20px; font-weight: 700;
   box-shadow: 0 0 18px var(--red-glow);
 }
-
 .brand-text .line1 { font-size: 22px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.1; }
 .brand-text .line2 { font-size: 14px; color: var(--text2); letter-spacing: 2px; text-transform: uppercase; font-family: var(--mono); }
 
-/* Barra de alerta */
 #alert-bar {
   flex: 1;
   display: flex; align-items: center; gap: 16px;
@@ -115,15 +111,14 @@ a { text-decoration: none; color: inherit; }
   border-radius: 8px;
   padding: 8px 20px;
   overflow: hidden; position: relative; min-width: 0;
+  transition: all 0.5s ease;
 }
-
 #alert-bar::before {
   content: '';
   position: absolute; left: -100%; top: 0; bottom: 0; width: 50%;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
   animation: sweep 4s linear infinite;
 }
-
 @keyframes sweep { to { left: 200%; } }
 
 .alert-code {
@@ -132,11 +127,11 @@ a { text-decoration: none; color: inherit; }
   text-shadow: 0 0 16px var(--red-glow);
   animation: blink-text 2.5s ease-in-out infinite;
   flex-shrink: 0;
+  transition: all 0.5s ease;
 }
 @keyframes blink-text { 0%,100%{opacity:1} 50%{opacity:.6} }
 
-.alert-sep { width: 2px; height: 38px; background: rgba(232,49,42,0.28); flex-shrink: 0; }
-
+.alert-sep { width: 2px; height: 38px; background: rgba(232,49,42,0.28); flex-shrink: 0; transition: all 0.5s ease;}
 .alert-addr { font-size: 24px; font-weight: 600; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .alert-city { font-size: 16px; color: var(--red); font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; flex-shrink: 0; }
 .alert-units { display: flex; gap: 8px; margin-left: auto; flex-shrink: 0; }
@@ -145,10 +140,7 @@ a { text-decoration: none; color: inherit; }
 .ubadge.sale { background: var(--red); color: #fff; }
 .ubadge.blue { background: rgba(59,130,246,0.18); border: 1px solid rgba(59,130,246,0.45); color: #93c5fd; }
 
-/* Lado derecho del header */
 .header-right { display: flex; align-items: center; gap: 24px; flex-shrink: 0; }
-
-/* Clima */
 .clima-blk { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.25; }
 .clima-temp { font-family: var(--mono); font-size: 30px; color: var(--amber); letter-spacing: 1px; }
 .clima-row  { display: flex; gap: 10px; align-items: center; }
@@ -156,7 +148,6 @@ a { text-decoration: none; color: inherit; }
 .clima-val  { font-family: var(--mono); font-size: 13px; color: var(--text2); }
 .clima-ico  { font-size: 20px; }
 
-/* Reloj */
 .reloj {
   font-family: var(--mono); font-size: 40px; letter-spacing: 4px; color: var(--text1);
   border-left: 1px solid var(--border2); padding-left: 24px;
@@ -205,7 +196,6 @@ a { text-decoration: none; color: inherit; }
   padding: 12px 18px; border-bottom: 1px solid var(--border);
   background: rgba(255,255,255,0.012); flex-shrink: 0;
 }
-
 .sec-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .sec-dot.r { background: var(--red);   box-shadow: 0 0 7px var(--red); }
 .sec-dot.g { background: var(--green); box-shadow: 0 0 7px var(--green); }
@@ -218,7 +208,6 @@ a { text-decoration: none; color: inherit; }
 
 /* ── Carros ── */
 #carros-wrap { flex-shrink: 0; }
-
 #set_carros_ui { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px 16px; }
 
 .carro-card {
@@ -228,20 +217,15 @@ a { text-decoration: none; color: inherit; }
   position: relative; overflow: hidden;
   transition: all .2s;
 }
-
 .carro-card::before {
-  content: ''; position: absolute;
-  left: 0; top: 0; bottom: 0; width: 4px;
-  border-radius: 8px 0 0 8px;
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 8px 0 0 8px;
 }
-
 .carro-card.verde::before  { background: var(--green); box-shadow: 2px 0 8px rgba(34,197,94,0.6); }
 .carro-card.rojo::before   { background: var(--red);   box-shadow: 2px 0 8px rgba(232,49,42,0.6); }
 .carro-card.naranja::before{ background: var(--amber); box-shadow: 2px 0 8px rgba(245,158,11,0.6); }
 .carro-card.celeste::before{ background: var(--cyan);  box-shadow: 2px 0 8px rgba(6,182,212,0.6); }
 .carro-card.gris::before   { background: var(--text3); }
 
-/* Fondo sutil de la card según estado */
 .carro-card.verde  { background: rgba(34,197,94,0.07);  border-color: rgba(34,197,94,0.2); }
 .carro-card.rojo   { background: rgba(232,49,42,0.07);  border-color: rgba(232,49,42,0.2); }
 .carro-card.naranja{ background: rgba(245,158,11,0.07); border-color: rgba(245,158,11,0.2); }
@@ -270,7 +254,7 @@ a { text-decoration: none; color: inherit; }
 .carro-dot.celeste{ background: var(--cyan);  box-shadow: 0 0 6px var(--cyan);  animation: blink-dot 1.6s infinite; }
 .carro-dot.gris   { background: var(--text3); }
 
-/* ── Personal (CORRECCIÓN APLICADA AQUÍ) ── */
+/* ── Personal ── */
 #personal-wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
 
 .personal-stats {
@@ -286,9 +270,9 @@ a { text-decoration: none; color: inherit; }
 .pstat-sep { width: 1px; height: 22px; background: var(--border); }
 
 #div_gente_ui {
-  flex: 1; overflow-y: auto; padding: 12px 16px;
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: max-content; /* Fuerza a la grilla a respetar la altura del contenido */
+  flex: 1; overflow-y: auto; overflow-x: hidden; padding: 12px 16px;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: max-content;
   gap: 8px; align-content: start;
   scrollbar-width: thin; scrollbar-color: var(--border2) transparent;
 }
@@ -297,23 +281,18 @@ a { text-decoration: none; color: inherit; }
   background: var(--bg3); border: 1px solid var(--border);
   border-radius: 8px; overflow: hidden;
   transition: all .2s; cursor: pointer;
-  display: flex; flex-direction: column; /* Fuerza estructura vertical segura */
+  display: flex; flex-direction: column;
+  min-width: 0;
 }
-
-.persona-card:hover {
-  border-color: var(--border2);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(0,0,0,.45);
-}
+.persona-card:hover { border-color: var(--border2); transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,0,0,.45); }
 
 .persona-foto {
-  width: 100%; aspect-ratio: 1;
+  width: 100%; aspect-ratio: 1 / 1;
   background: linear-gradient(135deg, #141c2a 0%, #0c1220 100%);
   position: relative; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; /* Evita que el navegador comprima la foto */
+  flex-shrink: 0;
 }
-.persona-foto img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
 .persona-foto-ico { font-size: 32px; opacity: .25; }
 
 .persona-sdot {
@@ -327,7 +306,7 @@ a { text-decoration: none; color: inherit; }
 .persona-sdot.en-curso      { background: var(--cyan); }
 .persona-sdot.conductor     { background: var(--text2); }
 
-.persona-body { padding: 6px 8px 8px; }
+.persona-body { padding: 6px 8px 8px; min-width: 0; }
 .persona-nombre { font-size: 12px; font-weight: 700; letter-spacing: .3px; text-transform: uppercase; color: var(--text1); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .persona-calidad { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .4px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .persona-badge { display: inline-block; margin-top: 5px; font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
@@ -337,11 +316,10 @@ a { text-decoration: none; color: inherit; }
 .pb-en-curso      { background: rgba(6,182,212,.14);   color: var(--cyan); }
 .pb-conductor     { background: rgba(148,163,184,.1);  color: var(--text2); }
 
-.persona-vacia { background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.04); border-radius: 8px; aspect-ratio: 1; }
+.persona-vacia { background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.04); border-radius: 8px; aspect-ratio: 1 / 1; }
 
 /* ── Llamados ── */
 #llamados-wrap { flex-shrink: 0; border-top: 1px solid var(--border); }
-
 #set_llamados_ui { display: flex; flex-direction: column; gap: 6px; padding: 10px 16px; }
 
 .llamado-item {
@@ -349,9 +327,7 @@ a { text-decoration: none; color: inherit; }
   padding: 10px 12px; background: var(--bg3); border: 1px solid var(--border);
   border-radius: 6px; transition: all .15s;
 }
-.llamado-item.activo { border-color: rgba(232,49,42,.28); background: rgba(232,49,42,.05); }
 .llamado-item:hover { background: var(--bg4); }
-
 .llamado-time { font-family: var(--mono); font-size: 12px; color: var(--text3); white-space: nowrap; padding-top: 2px; line-height: 1.5; }
 .llamado-det { flex: 1; min-width: 0; }
 .llamado-code { font-family: var(--mono); font-size: 16px; font-weight: 700; color: var(--red); letter-spacing: 1px; }
@@ -361,9 +337,7 @@ a { text-decoration: none; color: inherit; }
 
 /* ── Novedades ── */
 #novedades-wrap { flex-shrink: 0; border-top: 1px solid var(--border); }
-
 #set_manual_ui { padding: 8px 16px 12px; display: flex; flex-direction: column; gap: 6px; }
-
 .novedad-item { display: flex; gap: 10px; padding: 8px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; }
 .novedad-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); margin-top: 6px; flex-shrink: 0; }
 .novedad-content { flex: 1; min-width: 0; }
@@ -378,32 +352,21 @@ a { text-decoration: none; color: inherit; }
   background: var(--bg2); border-top: 1px solid var(--border);
   display: flex; align-items: center; padding: 0 20px; gap: 24px;
 }
-
 .fstat { display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 12px; color: var(--text3); letter-spacing: .5px; }
 .fdot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 .fdot.g { background: var(--green); }
 .fdot.r { background: var(--red); animation: blink-dot 1.4s infinite; }
 .fdot.a { background: var(--amber); }
 .fsep { width: 1px; height: 16px; background: var(--border); }
-
 #footer-fecha { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--text3); }
-
-/* ── Indicador SSE ── */
 #sse-status { transition: color .4s; }
 #sse-dot    { transition: background .4s; }
 
-/* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 
-/* ── Mensaje flotante ── */
-#msg-flotante {
-  display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 9998;
-  padding: 14px; text-align: center; font-size: 26px; font-weight: 700; letter-spacing: 1px; color: #fff;
-}
-
-/* ── Flash de actualización ── */
+#msg-flotante { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 9998; padding: 14px; text-align: center; font-size: 26px; font-weight: 700; letter-spacing: 1px; color: #fff; }
 @keyframes flash-update { 0%{background:rgba(34,197,94,.25)} 100%{background:transparent} }
 .updated { animation: flash-update .8s ease; }
 </style>
@@ -419,14 +382,14 @@ a { text-decoration: none; color: inherit; }
       <div class="brand-badge">10ª</div>
       <div class="brand-text">
         <div class="line1">Cuerpo de Bomberos · Santiago</div>
-        <div class="line2">SIAC · Emergenci — Sistema Integrado</div>
+        <div class="line2">SIAC · Central — Sistema Integrado</div>
       </div>
     </div>
 
     <div id="alert-bar">
       <div class="alert-code" id="alerta-codigo">—</div>
-      <div class="alert-sep"></div>
-      <div class="alert-addr" id="alerta-dir">Cargando emergencia…</div>
+      <div class="alert-sep" id="alerta-sep"></div>
+      <div class="alert-addr" id="alerta-dir">Cargando datos...</div>
       <div class="alert-city" id="alerta-ciudad"></div>
       <div class="alert-units" id="alerta-vehiculos"></div>
     </div>
@@ -451,7 +414,7 @@ a { text-decoration: none; color: inherit; }
       <div class="mstat">
         <div class="mstat-ico r"><i class="fa fa-fire"></i></div>
         <div>
-          <div class="mstat-lbl">Incidente activo</div>
+          <div class="mstat-lbl">Incidente / Último Despacho</div>
           <div class="mstat-val red" id="ov-codigo">—</div>
         </div>
       </div>
@@ -466,7 +429,7 @@ a { text-decoration: none; color: inherit; }
         <div class="mstat-ico g"><i class="fa fa-map-marker-alt"></i></div>
         <div>
           <div class="mstat-lbl">Destino</div>
-          <div class="mstat-val green" id="ov-dir" style="font-size:14px;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
+          <div class="mstat-val green" id="ov-dir" style="font-size:14px;max-width:280px;white-space:normal;line-height:1.2;word-break:break-word;">—</div>
         </div>
       </div>
       <div class="mstat" id="ov-dist-wrap" style="display:none;">
@@ -535,25 +498,24 @@ a { text-decoration: none; color: inherit; }
   <footer id="footer">
     <div class="fstat"><div class="fdot g"></div>SIAC</div>
     <div class="fsep"></div>
-    <div class="fstat" id="fstat-emergencia"><div class="fdot r"></div>EMERGENCIA ACTIVA</div>
+    <div class="fstat" id="fstat-emergencia"><div class="fdot g"></div>EN CUARTEL</div>
     <div class="fsep"></div>
     <div class="fstat">
       <div class="fdot a" id="sse-dot"></div>
       <span id="sse-status">CONECTANDO…</span>
     </div>
     <div class="fsep"></div>
-    <div class="fstat"><div class="fdot g"></div>GPS</div>
+    <div class="fstat"><div class="fdot g"></div>GPS Central</div>
     <div id="footer-fecha"></div>
   </footer>
 
 </div>
 
-<input id="registro" type="text" autocomplete="off"
-       style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0"/>
+<input id="registro" type="text" autocomplete="off" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0"/>
 
 <script>
 /* ════════════════════════════════════════
-   CONFIGURACIÓN
+   CONFIGURACIÓN 10MA CIA
 ════════════════════════════════════════ */
 const UNIDAD_LAT = -33.45798;
 const UNIDAD_LON = -70.641;
@@ -582,17 +544,6 @@ const ICONOS_CLIMA = {
    UTILIDADES
 ════════════════════════════════════════ */
 function pad2(n){ return n<10?'0'+n:''+n; }
-
-function colorClass(hex) {
-  const m = {
-    '#e5222d':'rojo','#E5222D':'rojo',
-    '#1a191a':'verde','#1A191A':'verde',
-    '#ff9322':'naranja','#FF9322':'naranja',
-    '#39c':'celeste','#39C':'celeste',
-    '#ccc':'gris','#CCC':'gris'
-  };
-  return m[hex] || 'gris';
-}
 
 function claseEstadoCarro(estadoNombre) {
   if (!estadoNombre) return 'gris';
@@ -660,21 +611,12 @@ var icoEmerg = L.divIcon({
   html: '<div style="width:48px;height:48px;background:#e8312a;border-radius:50%;border:3px solid #ffffff;box-shadow:0 0 0 5px rgba(232,49,42,0.4),0 0 30px rgba(232,49,42,0.9);display:flex;align-items:center;justify-content:center;animation:pmap 1.5s ease-in-out infinite;"><svg width=\'22\' height=\'22\' viewBox=\'0 0 24 24\' fill=\'white\'><path d=\'M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z\'/></svg></div>'
 });
 
-
 var markerBase  = L.marker([UNIDAD_LAT, UNIDAD_LON], {icon:icoBase}).addTo(map);
 var markerEmerg = L.marker([UNIDAD_LAT, UNIDAD_LON], {icon:icoEmerg}).addTo(map);
 markerBase.bindTooltip('10ª Compañía', {direction:'top', offset:[0,-30]});
 
-var rutaMapa = L.polyline([], {
-  color: '#e8312a', weight: 5, opacity: 1,
-  lineCap: 'round', lineJoin: 'round'
-}).addTo(map);
-
-var rutaRespaldo = L.polyline([], {
-  color: '#e8312a', weight: 4,
-  opacity: 0.5, dashArray: '10, 8',
-  lineCap: 'round'
-}).addTo(map);
+var rutaMapa = L.polyline([], {color: '#e8312a', weight: 5, opacity: 1, lineCap: 'round', lineJoin: 'round'}).addTo(map);
+var rutaRespaldo = L.polyline([], {color: '#e8312a', weight: 4, opacity: 0.5, dashArray: '10, 8', lineCap: 'round'}).addTo(map);
 
 var ultimaPosMapa = '';
 var ultimaRutaKey = '';
@@ -690,32 +632,27 @@ function moverMapa(lat, lon, codigo, dir) {
   rutaRespaldo.setLatLngs([[UNIDAD_LAT, UNIDAD_LON], [lat, lon]]);
   rutaMapa.setLatLngs([]);
 
-  var bounds = L.latLngBounds(
-    [UNIDAD_LAT, UNIDAD_LON],
-    [lat, lon]
-  );
+  var bounds = L.latLngBounds([UNIDAD_LAT, UNIDAD_LON], [lat, lon]);
   map.fitBounds(bounds, {padding: [80, 80], maxZoom: 16});
+
+  // SI ESTAMOS EN STANDBY (Mismo lugar), NO TRAZAMOS RUTA NI MOSTRAMOS KILÓMETROS
+  if (lat === UNIDAD_LAT && lon === UNIDAD_LON) {
+     $('#ov-dist-wrap').hide();
+     return; 
+  }
 
   var rutaKey = UNIDAD_LAT + ',' + UNIDAD_LON + '>' + lat + ',' + lon;
   if (rutaKey === ultimaRutaKey) return;
   ultimaRutaKey = rutaKey;
 
-  var osrmUrl = 'https://router.project-osrm.org/route/v1/driving/'
-    + UNIDAD_LON + ',' + UNIDAD_LAT + ';'
-    + lon + ',' + lat
-    + '?overview=full&geometries=geojson';
+  var osrmUrl = 'https://router.project-osrm.org/route/v1/driving/' + UNIDAD_LON + ',' + UNIDAD_LAT + ';' + lon + ',' + lat + '?overview=full&geometries=geojson';
 
   fetch(osrmUrl)
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      if (!data || !data.routes || !data.routes.length) {
-        console.warn('[OSRM] Sin rutas, manteniendo línea directa');
-        return;
-      }
+      if (!data || !data.routes || !data.routes.length) return;
       var route  = data.routes[0];
-      var coords = route.geometry.coordinates.map(function(c) {
-        return [c[1], c[0]];
-      });
+      var coords = route.geometry.coordinates.map(function(c) { return [c[1], c[0]]; });
 
       rutaMapa.setLatLngs(coords);
       rutaRespaldo.setLatLngs([]); 
@@ -724,12 +661,8 @@ function moverMapa(lat, lon, codigo, dir) {
       var minutos = Math.ceil(route.duration / 60);
       $('#ov-dist').text(distKm + ' km · ~' + minutos + ' min');
       $('#ov-dist-wrap').show();
-
       map.fitBounds(rutaMapa.getBounds(), {padding: [70, 70], maxZoom: 16});
-    })
-    .catch(function(err) {
-      console.warn('[OSRM] Error:', err, '— manteniendo línea directa');
-    });
+    }).catch(function(err) {});
 }
 
 /* ════════════════════════════════════════
@@ -740,13 +673,11 @@ var total_todos = 0;
 function renderPersonal(data) {
   var disponibles = parseInt(data.disponibles) || 0;
   $('#stat-disponibles').text(disponibles);
-
   var $grid = $('#div_gente_ui');
   $grid.html('');
 
   if (typeof data.bomberos !== 'object' || !data.bomberos) {
-    $('#stat-total').text(0); $('#stat-no-disp').text(0);
-    return;
+    $('#stat-total').text(0); $('#stat-no-disp').text(0); return;
   }
 
   total_todos = data.bomberos.length;
@@ -761,8 +692,9 @@ function renderPersonal(data) {
     var badge = BADGE_CLASE[slug] || 'pb-disponible';
     var btext = BADGE_TEXT[slug] || 'Disponible';
 
-    var fotoHtml = (total_todos <= maxFotos && p.foto)
-      ? '<img src="'+p.foto+'" alt="'+p.nombre+'" onerror="this.style.display=\'none\'"/>'
+    var tieneFoto = (p.foto && p.foto.trim() !== '' && p.foto !== 'null');
+    var fotoHtml = (total_todos <= maxFotos && tieneFoto)
+      ? '<div style="width:100%; height:100%; background: url(\''+p.foto+'\') center top / cover no-repeat;"></div>'
       : '<span class="persona-foto-ico">👤</span>';
 
     $grid.append(
@@ -781,13 +713,9 @@ function renderPersonal(data) {
 
   var vacios = Math.max(0, Math.min(8, maxFotos - total_todos));
   for (var v = 0; v < vacios; v++) $grid.append('<div class="persona-vacia"></div>');
-
   flashEl('div_gente_ui');
 }
 
-/* ════════════════════════════════════════
-   CAMBIAR ESTADO
-════════════════════════════════════════ */
 function cambiarEstado(i, id_bombero, id_personas_extra) {
   if (!id_bombero || id_bombero === 'undefined') return;
   var estado = ($('#estado'+i).val() * 1 + 1);
@@ -797,27 +725,17 @@ function cambiarEstado(i, id_bombero, id_personas_extra) {
   $('#estado'+i).val(estado);
   $('#sdot'+i).attr('class', 'persona-sdot '+slug);
   $('#pbadge'+i).attr('class', 'persona-badge '+BADGE_CLASE[slug]).text(BADGE_TEXT[slug]);
-  actualizarTotales();
 
   $.getJSON('/api/cambiar_estado?id_bombero='+id_bombero+'&id_personas_extra='+id_personas_extra+'&estado='+estado)
     .fail(function(){ console.warn('Error al cambiar estado'); });
 }
 
-function actualizarTotales() {
-  var disp = 0;
-  for (var i = 0; i < total_todos; i++) {
-    if ($('#estado'+i).val() * 1 === 1) disp++;
-  }
-  $('#stat-disponibles').text(disp);
-  $('#stat-no-disp').text(total_todos - disp);
-}
-
 /* ════════════════════════════════════════
-   RENDER EMERGENCIA
+   RENDER EMERGENCIA Y CENTRAL
 ════════════════════════════════════════ */
 function renderEmergencia(data) {
   renderCarros(data.carros);
-  renderLlamados(data.llamados, data.coordenadas_exactas);
+  renderLlamados(data.llamados, data.despacho_oficial);
   renderNovedades(data.manual);
 }
 
@@ -861,57 +779,100 @@ function parsearLlamado(texto) {
   return {codigo:codigo, dir:dir, unidades:unidades};
 }
 
-function renderLlamados(llamados, coordExactas) {
+function renderLlamados(llamados, despacho) {
   var $ui = $('#set_llamados_ui');
   $ui.html('');
 
   if (!llamados || llamados.length < 1) {
     $ui.html('<div class="llamado-item"><div class="llamado-det" style="color:var(--text3);font-size:14px;">Sin llamados recientes</div></div>');
-    $('#alerta-codigo').text('—');
-    $('#alerta-dir').text('Sin emergencia activa');
-    $('#alerta-ciudad').text('');
-    $('#alerta-vehiculos').html('');
     return;
   }
 
+  // 1. Extraemos el PRIMER llamado (El más reciente de la historia de la 10ma)
   var ul = parsearLlamado(llamados[0].texto);
-  $('#alerta-codigo').text(ul.codigo);
-  $('#alerta-dir').text(ul.dir);
-  $('#ov-codigo').text(ul.codigo);
-  $('#ov-dir').text(ul.dir);
-  $('#ov-unidades').text(ul.unidades ? ul.unidades.split(',').length+' carros' : '0 carros');
 
-  var badgesHeader = '';
-  if (ul.unidades) {
-    ul.unidades.split(',').forEach(function(u) {
-      var cls = u.trim().includes('10') ? 'sale' : 'blue';
-      badgesHeader += '<span class="ubadge '+cls+'">'+u.trim()+'</span>';
+  // 2. Llenamos la barra lateral SÓLO con los llamados restantes (índice 1 hacia abajo)
+  var resto = llamados.slice(1);
+  if (resto.length === 0) {
+    $ui.html('<div class="llamado-item"><div class="llamado-det" style="color:var(--text3);font-size:14px;">Sin llamados anteriores</div></div>');
+  } else {
+    $.each(resto, function(i, l) {
+      var p = parsearLlamado(l.texto);
+      var badges = '';
+      if (p.unidades) {
+        p.unidades.split(',').forEach(function(u){ badges += '<span class="lunit">'+u.trim()+'</span>'; });
+      }
+      var fecha = l.fecha ? l.fecha.replace(' ','<br/>') : '—';
+      $ui.append(
+        '<div class="llamado-item">'+
+          '<div class="llamado-time">'+fecha+'</div>'+
+          '<div class="llamado-det">'+
+            '<div class="llamado-code">'+p.codigo+'</div>'+
+            '<div class="llamado-addr">'+p.dir+'</div>'+
+            (badges ? '<div class="llamado-units">'+badges+'</div>' : '')+
+          '</div>'+
+        '</div>'
+      );
     });
   }
-  $('#alerta-vehiculos').html(badgesHeader);
 
-  if (coordExactas && coordExactas.lat && coordExactas.lon) {
-    moverMapa(parseFloat(coordExactas.lat), parseFloat(coordExactas.lon), ul.codigo, ul.dir);
-  }
+  // 3. Control de la Barra Superior (Activo vs Standby)
+  if (despacho && despacho.activa) {
+    // EN EMERGENCIA (JSON Central Detectó la 10ma)
+    $('#alerta-codigo').text(despacho.codigo);
+    $('#alerta-dir').html(despacho.direccion.replace(/\s*[y\/]\s*/g, ' / <br>'));
+    $('#ov-codigo').text(despacho.codigo);
+    $('#ov-dir').html(despacho.direccion.replace(/\s*[y\/]\s*/g, ' / <br>'));
+    
+    var arrU = despacho.unidades ? despacho.unidades.split(', ') : [];
+    $('#ov-unidades').text((arrU.length > 0 && arrU[0] !== "") ? arrU.length + ' carros' : '0 carros');
 
-  $.each(llamados, function(i, l) {
-    var p = parsearLlamado(l.texto);
-    var badges = '';
-    if (p.unidades) {
-      p.unidades.split(',').forEach(function(u){ badges += '<span class="lunit">'+u.trim()+'</span>'; });
+    var badgesHeader = '';
+    arrU.forEach(function(u) {
+      if(u) {
+        var cls = u.endsWith('10') ? 'sale' : 'blue';
+        badgesHeader += '<span class="ubadge '+cls+'">'+u+'</span>';
+      }
+    });
+    $('#alerta-vehiculos').html(badgesHeader);
+
+    // Diseño Activo
+    $('#alerta-codigo').css('animation', 'blink-text 2.5s ease-in-out infinite').css('color', 'var(--red)');
+    $('#alert-bar').css('opacity', '1').css('filter', 'none');
+    $('#alerta-sep').css('background', 'rgba(232,49,42,0.28)');
+    $('#fstat-emergencia').html('<div class="fdot r"></div>EMERGENCIA ACTIVA');
+
+    if (despacho.lat && despacho.lon) {
+      moverMapa(parseFloat(despacho.lat), parseFloat(despacho.lon), despacho.codigo, despacho.direccion);
     }
-    var fecha = l.fecha ? l.fecha.replace(' ','<br/>') : '—';
-    $ui.append(
-      '<div class="llamado-item'+(i===0?' activo':'')+'">'+
-        '<div class="llamado-time">'+fecha+'</div>'+
-        '<div class="llamado-det">'+
-          '<div class="llamado-code">'+p.codigo+'</div>'+
-          '<div class="llamado-addr">'+p.dir+'</div>'+
-          (badges ? '<div class="llamado-units">'+badges+'</div>' : '')+
-        '</div>'+
-      '</div>'
-    );
-  });
+  } else {
+    // STANDBY (JSON Vacío -> Usar la info del PRIMER llamado histórico)
+    $('#alerta-codigo').text(ul.codigo);
+    $('#alerta-dir').html(ul.dir.replace(/\s*[y\/]\s*/g, ' / <br>'));
+    $('#ov-codigo').text(ul.codigo);
+    $('#ov-dir').html(ul.dir.replace(/\s*[y\/]\s*/g, ' / <br>'));
+    
+    var arrU = ul.unidades ? ul.unidades.split(',') : [];
+    $('#ov-unidades').text((arrU.length > 0 && arrU[0] !== "") ? arrU.length + ' carros' : '0 carros');
+
+    var badgesHeader = '';
+    arrU.forEach(function(u) {
+      if(u.trim()) {
+        var cls = u.trim().endsWith('10') ? 'sale' : 'blue';
+        badgesHeader += '<span class="ubadge '+cls+'">'+u.trim()+'</span>';
+      }
+    });
+    $('#alerta-vehiculos').html(badgesHeader);
+
+    // Diseño Apagado / Standby
+    $('#alerta-codigo').css('animation', 'none').css('color', 'var(--text3)');
+    $('#alert-bar').css('opacity', '0.8').css('filter', 'grayscale(0.6)');
+    $('#alerta-sep').css('background', 'var(--border)');
+    $('#fstat-emergencia').html('<div class="fdot g"></div>STANDBY - ÚLTIMO DESPACHO');
+
+    // El mapa vuelve al cuartel para no confundir al maquinista
+    moverMapa(UNIDAD_LAT, UNIDAD_LON, '10-0', 'EN CUARTEL');
+  }
 }
 
 function renderNovedades(manual) {
@@ -923,134 +884,32 @@ function renderNovedades(manual) {
   }
   $.each(manual, function(i, m) {
     $ui.append(
-      '<div class="novedad-item">'+
-        '<div class="novedad-dot"></div>'+
-        '<div class="novedad-content">'+
-          '<div class="novedad-fecha">'+(m.fecha||'')+'</div>'+
-          '<div class="novedad-texto">'+(m.descripcion||'')+'</div>'+
-        '</div>'+
-      '</div>'
+      '<div class="novedad-item"><div class="novedad-dot"></div><div class="novedad-content"><div class="novedad-fecha">'+(m.fecha||'')+'</div><div class="novedad-texto">'+(m.descripcion||'')+'</div></div></div>'
     );
   });
 }
 
 /* ════════════════════════════════════════
-   CLIMA
+   SSE E INICIO RÁPIDO
 ════════════════════════════════════════ */
-function cargarClima() {
-  $.getJSON('/api/clima', function(data) {
-    try {
-      var min = data['days'][0]['tempmin'];
-      var max = data['days'][0]['tempmax'];
-      var cc  = data['currentConditions'];
-      $('#hdr-temp').text(cc['temp']);
-      $('#hdr-hum').text(cc['humidity']);
-      $('#hdr-min').text(min);
-      $('#hdr-max').text(max);
-      var ico = ICONOS_CLIMA[cc['icon']] || '🌤';
-      $('#hdr-ico').text(ico);
-    } catch(e) {}
-  });
-}
-
-/* ════════════════════════════════════════
-   SSE — TIEMPO REAL
-════════════════════════════════════════ */
-var sseConectado = false;
-var pollingIds   = [];
-
-function setSSEStatus(ok, texto) {
-  sseConectado = ok;
-  $('#sse-dot').css('background', ok ? 'var(--green)' : 'var(--amber)');
-  $('#sse-status').text(texto || (ok ? 'TIEMPO REAL' : 'POLLING'));
-}
-
 function iniciarSSE() {
-  if (!window.EventSource) {
-    console.warn('EventSource no disponible, usando polling.');
-    iniciarPolling();
-    return;
-  }
-
   var es = new EventSource('/api/stream');
-
-  es.addEventListener('open', function() {
-    setSSEStatus(true, 'TIEMPO REAL');
-    pollingIds.forEach(function(id){ clearInterval(id); });
-    pollingIds = [];
-  });
-
-  es.addEventListener('personal', function(e) {
-    try { renderPersonal(JSON.parse(e.data)); } catch(ex) {}
-  });
-
-  es.addEventListener('emergencia', function(e) {
-    try { renderEmergencia(JSON.parse(e.data)); } catch(ex) {}
-  });
-
-  es.addEventListener('error', function() {
-    setSSEStatus(false, 'RECONECTANDO…');
-    if (pollingIds.length === 0) iniciarPolling();
-  });
+  es.addEventListener('open', function() { $('#sse-status').text('TIEMPO REAL'); });
+  es.addEventListener('personal', function(e) { try { renderPersonal(JSON.parse(e.data)); } catch(ex) {} });
+  es.addEventListener('emergencia', function(e) { try { renderEmergencia(JSON.parse(e.data)); } catch(ex) {} });
 }
 
-function iniciarPolling() {
-  setSSEStatus(false, 'POLLING 10S');
-  pollingIds.forEach(function(id){ clearInterval(id); });
-  pollingIds = [];
-
+$(document).ready(function() {
+  $.getJSON('/api/clima', function(d) {
+      try {
+        $('#hdr-temp').text(d.currentConditions.temp); $('#hdr-hum').text(d.currentConditions.humidity);
+        $('#hdr-min').text(d.days[0].tempmin); $('#hdr-max').text(d.days[0].tempmax);
+      } catch(e) {}
+  });
   $.getJSON('/api/personal', function(d){ renderPersonal(d); });
   $.getJSON('/api/emergencia', function(d){ renderEmergencia(d); });
-
-  pollingIds.push(setInterval(function(){
-    $.getJSON('/api/emergencia', function(d){ renderEmergencia(d); });
-  }, 10000));
-
-  pollingIds.push(setInterval(function(){
-    $.getJSON('/api/personal', function(d){ renderPersonal(d); });
-  }, 15000));
-}
-
-/* ════════════════════════════════════════
-   REGISTRO (lector / teclado)
-════════════════════════════════════════ */
-$(document).ready(function() {
-  $('#registro').on('keypress', function(e) {
-    if (e.which === 13 && $(this).val().length > 0) {
-      $(this).prop('disabled', true);
-      $.ajax({
-        type:'POST', url:'/api/registro', timeout:20000,
-        data:{'registro': $(this).val()},
-        success: function(data) {
-          if (data.msg && data.msg !== '') mostrarMensaje(data.msg, 'error');
-        }
-      });
-      $(this).val('');
-      setTimeout(function(){ $('#registro').prop('disabled',false).focus(); }, 1000);
-    }
-  });
-  $('#registro').focus();
-});
-
-/* ════════════════════════════════════════
-   MENSAJES UI
-════════════════════════════════════════ */
-function mostrarMensaje(texto, tipo) {
-  var $m = $('#msg-flotante');
-  $m.css('background', tipo === 'error' ? '#e8312a' : '#005A92');
-  $m.text(texto).show();
-  setTimeout(function(){ $m.fadeOut(800); }, 4500);
-}
-
-/* ════════════════════════════════════════
-   INICIO
-════════════════════════════════════════ */
-(function init() {
-  cargarClima();
-  setInterval(cargarClima, 10 * 60 * 1000);
   iniciarSSE();
-  setInterval(function(){ location.reload(); }, 6 * 60 * 60 * 1000);
-})();
+});
 </script>
 </body>
 </html>
