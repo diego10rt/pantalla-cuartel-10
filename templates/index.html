@@ -548,10 +548,12 @@ function pad2(n){ return n<10?'0'+n:''+n; }
 function claseEstadoCarro(estadoNombre) {
   if (!estadoNombre) return 'gris';
   var t = estadoNombre.toUpperCase();
-  if (t.includes('SERVICIO') || t.includes('DISPONIBLE'))   return 'verde';
-  if (t.includes('LLAMADO') || t.includes('CURSO'))         return 'naranja';
+  
   if (t.includes('FUERA')   || t.includes('NO DISP') ||
       t.includes('INACTIV') || t.includes('TALLER'))        return 'rojo';
+  if (t.includes('LLAMADO') || t.includes('CURSO'))         return 'naranja';
+  if (t.includes('SERVICIO') || t.includes('DISPONIBLE'))   return 'verde';
+  
   return 'gris';
 }
 
@@ -635,7 +637,6 @@ function moverMapa(lat, lon, codigo, dir) {
   var bounds = L.latLngBounds([UNIDAD_LAT, UNIDAD_LON], [lat, lon]);
   map.fitBounds(bounds, {padding: [80, 80], maxZoom: 16});
 
-  // SI ESTAMOS EN STANDBY (Mismo lugar), NO TRAZAMOS RUTA NI MOSTRAMOS KILÓMETROS
   if (lat === UNIDAD_LAT && lon === UNIDAD_LON) {
      $('#ov-dist-wrap').hide();
      return; 
@@ -788,10 +789,8 @@ function renderLlamados(llamados, despacho) {
     return;
   }
 
-  // 1. Extraemos el PRIMER llamado (El más reciente de la historia de la 10ma)
   var ul = parsearLlamado(llamados[0].texto);
 
-  // 2. Llenamos la barra lateral SÓLO con los llamados restantes (índice 1 hacia abajo)
   var resto = llamados.slice(1);
   if (resto.length === 0) {
     $ui.html('<div class="llamado-item"><div class="llamado-det" style="color:var(--text3);font-size:14px;">Sin llamados anteriores</div></div>');
@@ -816,62 +815,52 @@ function renderLlamados(llamados, despacho) {
     });
   }
 
-  // 3. Control de la Barra Superior (Activo vs Standby)
-  if (despacho && despacho.activa) {
-    // EN EMERGENCIA (JSON Central Detectó la 10ma)
-    $('#alerta-codigo').text(despacho.codigo);
-    $('#alerta-dir').html(despacho.direccion.replace(/\s*[y\/]\s*/g, ' / <br>'));
-    $('#ov-codigo').text(despacho.codigo);
-    $('#ov-dir').html(despacho.direccion.replace(/\s*[y\/]\s*/g, ' / <br>'));
-    
-    var arrU = despacho.unidades ? despacho.unidades.split(', ') : [];
-    $('#ov-unidades').text((arrU.length > 0 && arrU[0] !== "") ? arrU.length + ' carros' : '0 carros');
+  if (despacho) {
+    var showCode = despacho.codigo;
+    var showDir = despacho.direccion;
+    var showUnits = despacho.unidades;
 
-    var badgesHeader = '';
-    arrU.forEach(function(u) {
-      if(u) {
-        var cls = u.endsWith('10') ? 'sale' : 'blue';
-        badgesHeader += '<span class="ubadge '+cls+'">'+u+'</span>';
-      }
-    });
-    $('#alerta-vehiculos').html(badgesHeader);
-
-    // Diseño Activo
-    $('#alerta-codigo').css('animation', 'blink-text 2.5s ease-in-out infinite').css('color', 'var(--red)');
-    $('#alert-bar').css('opacity', '1').css('filter', 'none');
-    $('#alerta-sep').css('background', 'rgba(232,49,42,0.28)');
-    $('#fstat-emergencia').html('<div class="fdot r"></div>EMERGENCIA ACTIVA');
-
-    if (despacho.lat && despacho.lon) {
-      moverMapa(parseFloat(despacho.lat), parseFloat(despacho.lon), despacho.codigo, despacho.direccion);
+    if (!despacho.activa && despacho.codigo === '10-0' && ul && ul.codigo) {
+      showCode = ul.codigo;
+      showDir = ul.dir;
+      showUnits = ul.unidades;
     }
-  } else {
-    // STANDBY (JSON Vacío -> Usar la info del PRIMER llamado histórico)
-    $('#alerta-codigo').text(ul.codigo);
-    $('#alerta-dir').html(ul.dir.replace(/\s*[y\/]\s*/g, ' / <br>'));
-    $('#ov-codigo').text(ul.codigo);
-    $('#ov-dir').html(ul.dir.replace(/\s*[y\/]\s*/g, ' / <br>'));
+
+    $('#alerta-codigo').text(showCode);
+    $('#alerta-dir').html(showDir.replace(/\s*[y\/]\s*/g, ' / <br>'));
+    $('#ov-codigo').text(showCode);
+    $('#ov-dir').html(showDir.replace(/\s*[y\/]\s*/g, ' / <br>'));
     
-    var arrU = ul.unidades ? ul.unidades.split(',') : [];
-    $('#ov-unidades').text((arrU.length > 0 && arrU[0] !== "") ? arrU.length + ' carros' : '0 carros');
+    var arrU = showUnits ? (showUnits.includes(',') ? showUnits.split(',') : showUnits.split(' ')) : [];
+    var validUnits = [];
+    arrU.forEach(function(x) { if(x.trim()) validUnits.push(x.trim()); });
+    
+    $('#ov-unidades').text(validUnits.length > 0 ? validUnits.length + ' carros' : '0 carros');
 
     var badgesHeader = '';
-    arrU.forEach(function(u) {
-      if(u.trim()) {
-        var cls = u.trim().endsWith('10') ? 'sale' : 'blue';
-        badgesHeader += '<span class="ubadge '+cls+'">'+u.trim()+'</span>';
-      }
+    validUnits.forEach(function(u) {
+      var cls = u.endsWith('10') ? 'sale' : 'blue';
+      badgesHeader += '<span class="ubadge '+cls+'">'+u+'</span>';
     });
     $('#alerta-vehiculos').html(badgesHeader);
 
-    // Diseño Apagado / Standby
-    $('#alerta-codigo').css('animation', 'none').css('color', 'var(--text3)');
-    $('#alert-bar').css('opacity', '0.8').css('filter', 'grayscale(0.6)');
-    $('#alerta-sep').css('background', 'var(--border)');
-    $('#fstat-emergencia').html('<div class="fdot g"></div>STANDBY - ÚLTIMO DESPACHO');
+    if (despacho.activa) {
+      $('#alerta-codigo').css('animation', 'blink-text 2.5s ease-in-out infinite').css('color', 'var(--red)');
+      $('#alert-bar').css('opacity', '1').css('filter', 'none');
+      $('#alerta-sep').css('background', 'rgba(232,49,42,0.28)');
+      $('#fstat-emergencia').html('<div class="fdot r"></div>EMERGENCIA ACTIVA');
+    } else {
+      $('#alerta-codigo').css('animation', 'none').css('color', 'var(--text3)');
+      $('#alert-bar').css('opacity', '0.8').css('filter', 'grayscale(0.6)');
+      $('#alerta-sep').css('background', 'var(--border)');
+      $('#fstat-emergencia').html('<div class="fdot g"></div>STANDBY - ÚLTIMO DESPACHO');
+    }
 
-    // El mapa vuelve al cuartel para no confundir al maquinista
-    moverMapa(UNIDAD_LAT, UNIDAD_LON, '10-0', 'EN CUARTEL');
+    if (despacho.lat && despacho.lon && (despacho.lat !== UNIDAD_LAT || despacho.lon !== UNIDAD_LON)) {
+      moverMapa(parseFloat(despacho.lat), parseFloat(despacho.lon), showCode, showDir);
+    } else {
+      $('#ov-dist-wrap').hide();
+    }
   }
 }
 
