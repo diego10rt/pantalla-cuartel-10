@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>10ª Compañía — Dashboard Integrado</title>
+<title>10ª Compañía — Dashboard Laboratorio</title>
 
 <script src="https://icbs.cl/cuartel/js/jquery-1.12.2.min.js"></script>
 <script src="https://icbs.cl/cuartel/libreria.js"></script>
@@ -208,17 +208,17 @@ a { text-decoration: none; color: inherit; }
 
 /* ── Carros ── */
 #carros-wrap { flex-shrink: 0; }
-#set_carros_ui { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px 16px; }
+#set_carros_ui { display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; }
 
 .carro-card {
   background: var(--bg3); border: 1px solid var(--border);
   border-radius: 8px; padding: 12px 14px;
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; gap: 14px;
   position: relative; overflow: hidden;
   transition: all .2s;
 }
 .carro-card::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 8px 0 0 8px;
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; border-radius: 8px 0 0 8px;
 }
 .carro-card.verde::before  { background: var(--green); box-shadow: 2px 0 8px rgba(34,197,94,0.6); }
 .carro-card.rojo::before   { background: var(--red);   box-shadow: 2px 0 8px rgba(232,49,42,0.6); }
@@ -231,96 +231,52 @@ a { text-decoration: none; color: inherit; }
 .carro-card.naranja{ background: rgba(245,158,11,0.07); border-color: rgba(245,158,11,0.2); }
 .carro-card.celeste{ background: rgba(6,182,212,0.07);  border-color: rgba(6,182,212,0.2); }
 
-.carro-id { font-family: var(--mono); font-size: 24px; font-weight: 700; letter-spacing: 1px; }
+.carro-id { font-family: var(--mono); font-size: 26px; font-weight: 700; letter-spacing: 1px; width: 70px; flex-shrink: 0;}
 .carro-id.verde  { color: var(--green);  text-shadow: 0 0 10px rgba(34,197,94,0.5); }
 .carro-id.rojo   { color: var(--red);    text-shadow: 0 0 10px rgba(232,49,42,0.5); }
 .carro-id.naranja{ color: var(--amber);  text-shadow: 0 0 10px rgba(245,158,11,0.5); }
 .carro-id.celeste{ color: var(--cyan);   text-shadow: 0 0 10px rgba(6,182,212,0.5); }
 .carro-id.gris   { color: var(--text3); }
 
-.carro-info { flex: 1; min-width: 0; }
+.carro-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
 .carro-estado { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; }
 .carro-estado.verde  { color: var(--green); }
 .carro-estado.rojo   { color: var(--red); }
 .carro-estado.naranja{ color: var(--amber); }
 .carro-estado.celeste{ color: var(--cyan); }
 .carro-estado.gris   { color: var(--text3); }
-.carro-conductor { font-size: 12px; color: var(--text3); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-.carro-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.carro-conductor { 
+  font-size: 13px; font-weight: 600; color: var(--text1); 
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+  background: rgba(255,255,255,0.08); padding: 4px 8px; border-radius: 4px; 
+  display: inline-block; max-width: fit-content; border: 1px solid var(--border);
+}
+
+.carro-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 .carro-dot.verde  { background: var(--green); box-shadow: 0 0 6px var(--green); animation: blink-dot 1.8s infinite; }
 .carro-dot.rojo   { background: var(--red);   box-shadow: 0 0 6px var(--red);   animation: blink-dot 1.0s infinite; }
 .carro-dot.naranja{ background: var(--amber); box-shadow: 0 0 6px var(--amber); animation: blink-dot 1.4s infinite; }
 .carro-dot.celeste{ background: var(--cyan);  box-shadow: 0 0 6px var(--cyan);  animation: blink-dot 1.6s infinite; }
 .carro-dot.gris   { background: var(--text3); }
 
-/* ── Personal ── */
-#personal-wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+/* ── Personal (Reducido) ── */
+#personal-wrap { flex-shrink: 0; border-top: 1px solid var(--border); }
 
 .personal-stats {
-  display: flex; align-items: center; gap: 18px;
-  padding: 10px 18px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-around;
+  padding: 14px 18px;
 }
-.pstat { display: flex; align-items: baseline; gap: 6px; }
-.pstat-num { font-family: var(--mono); font-size: 28px; font-weight: 700; line-height: 1; }
-.pstat-num.w { color: var(--text1); }
-.pstat-num.g { color: var(--green); }
-.pstat-num.r { color: var(--red); }
-.pstat-lbl { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
-.pstat-sep { width: 1px; height: 22px; background: var(--border); }
+.pstat { display: flex; align-items: baseline; gap: 8px; }
+.pstat-num { font-family: var(--mono); font-size: 34px; font-weight: 700; line-height: 1; }
+.pstat-num.g { color: var(--green); text-shadow: 0 0 10px rgba(34,197,94,0.3); }
+.pstat-num.r { color: var(--red); text-shadow: 0 0 10px rgba(232,49,42,0.3); }
+.pstat-lbl { font-size: 13px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+.pstat-sep { width: 1px; height: 30px; background: var(--border); }
 
-#div_gente_ui {
-  flex: 1; overflow-y: auto; overflow-x: hidden; padding: 12px 16px;
-  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
-  grid-auto-rows: max-content;
-  gap: 8px; align-content: start;
-  scrollbar-width: thin; scrollbar-color: var(--border2) transparent;
-}
-
-.persona-card {
-  background: var(--bg3); border: 1px solid var(--border);
-  border-radius: 8px; overflow: hidden;
-  transition: all .2s; cursor: pointer;
-  display: flex; flex-direction: column;
-  min-width: 0;
-}
-.persona-card:hover { border-color: var(--border2); transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,0,0,.45); }
-
-.persona-foto {
-  width: 100%; aspect-ratio: 1 / 1;
-  background: linear-gradient(135deg, #141c2a 0%, #0c1220 100%);
-  position: relative; overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.persona-foto-ico { font-size: 32px; opacity: .25; }
-
-.persona-sdot {
-  position: absolute; top: 6px; right: 6px;
-  width: 10px; height: 10px; border-radius: 50%;
-  border: 2px solid var(--bg3);
-}
-.persona-sdot.disponible    { background: var(--green); }
-.persona-sdot.no-disponible { background: var(--red); }
-.persona-sdot.en-llamado    { background: var(--amber); }
-.persona-sdot.en-curso      { background: var(--cyan); }
-.persona-sdot.conductor     { background: var(--text2); }
-
-.persona-body { padding: 6px 8px 8px; min-width: 0; }
-.persona-nombre { font-size: 12px; font-weight: 700; letter-spacing: .3px; text-transform: uppercase; color: var(--text1); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.persona-calidad { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .4px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.persona-badge { display: inline-block; margin-top: 5px; font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
-.pb-disponible    { background: rgba(34,197,94,.14);  color: var(--green); }
-.pb-no-disponible { background: var(--red-dim);        color: var(--red); }
-.pb-en-llamado    { background: rgba(245,158,11,.14);  color: var(--amber); }
-.pb-en-curso      { background: rgba(6,182,212,.14);   color: var(--cyan); }
-.pb-conductor     { background: rgba(148,163,184,.1);  color: var(--text2); }
-
-.persona-vacia { background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.04); border-radius: 8px; aspect-ratio: 1 / 1; }
-
-/* ── Llamados ── */
-#llamados-wrap { flex-shrink: 0; border-top: 1px solid var(--border); }
-#set_llamados_ui { display: flex; flex-direction: column; gap: 6px; padding: 10px 16px; }
+/* ── Llamados (Ahora se expande) ── */
+#llamados-wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; border-top: 1px solid var(--border); }
+#set_llamados_ui { flex: 1; overflow-y: auto; padding: 10px 16px; display: flex; flex-direction: column; gap: 6px; scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
 
 .llamado-item {
   display: flex; align-items: flex-start; gap: 12px;
@@ -458,19 +414,16 @@ a { text-decoration: none; color: inherit; }
       </div>
     </div>
 
-    <div id="personal-wrap">
+    <div id="personal-wrap" id="personal-container">
       <div class="sec-hdr">
         <div class="sec-dot g"></div>
         <div class="sec-title">Personal en Cuartel</div>
       </div>
       <div class="personal-stats">
-        <div class="pstat"><div class="pstat-num w" id="stat-total">—</div><div class="pstat-lbl">Total</div></div>
-        <div class="pstat-sep"></div>
         <div class="pstat"><div class="pstat-num g" id="stat-disponibles">—</div><div class="pstat-lbl">Disponibles</div></div>
         <div class="pstat-sep"></div>
-        <div class="pstat"><div class="pstat-num r" id="stat-no-disp">—</div><div class="pstat-lbl">No disp.</div></div>
+        <div class="pstat"><div class="pstat-num r" id="stat-no-disp">—</div><div class="pstat-lbl">No Disp.</div></div>
       </div>
-      <div id="div_gente_ui"></div>
     </div>
 
     <div id="llamados-wrap">
@@ -511,34 +464,12 @@ a { text-decoration: none; color: inherit; }
 
 </div>
 
-<input id="registro" type="text" autocomplete="off" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0"/>
-
 <script>
 /* ════════════════════════════════════════
    CONFIGURACIÓN 10MA CIA
 ════════════════════════════════════════ */
 const UNIDAD_LAT = -33.45798;
 const UNIDAD_LON = -70.641;
-
-const BADGE_CLASE = {
-  'disponible':    'pb-disponible',
-  'no-disponible': 'pb-no-disponible',
-  'en-llamado':    'pb-en-llamado',
-  'en-curso':      'pb-en-curso',
-  'conductor':     'pb-conductor',
-};
-const BADGE_TEXT = {
-  'disponible':    'Disponible',
-  'no-disponible': 'No disponible',
-  'en-llamado':    'En Llamado',
-  'en-curso':      'En Curso',
-  'conductor':     'Conductor',
-};
-const ICONOS_CLIMA = {
-  'clear-day':'☀️','clear-night':'🌙','partly-cloudy-day':'⛅','partly-cloudy-night':'🌤',
-  'cloudy':'☁️','rain':'🌧','snow':'❄️','sleet':'🌨','wind':'💨','fog':'🌫',
-  'thunder-rain':'⛈','thunder-showers-day':'🌩','thunder-showers-night':'🌩',
-};
 
 /* ════════════════════════════════════════
    UTILIDADES
@@ -555,10 +486,6 @@ function claseEstadoCarro(estadoNombre) {
   if (t.includes('SERVICIO') || t.includes('DISPONIBLE'))   return 'verde';
   
   return 'gris';
-}
-
-function estadoSlug(v) {
-  return ['no-disponible','disponible','en-llamado','en-curso','conductor'][v] || 'no-disponible';
 }
 
 function flashEl(id) {
@@ -667,68 +594,20 @@ function moverMapa(lat, lon, codigo, dir) {
 }
 
 /* ════════════════════════════════════════
-   RENDER PERSONAL
+   RENDER PERSONAL (Modificado: Sin fotos)
 ════════════════════════════════════════ */
-var total_todos = 0;
-
 function renderPersonal(data) {
   var disponibles = parseInt(data.disponibles) || 0;
   $('#stat-disponibles').text(disponibles);
-  var $grid = $('#div_gente_ui');
-  $grid.html('');
 
   if (typeof data.bomberos !== 'object' || !data.bomberos) {
-    $('#stat-total').text(0); $('#stat-no-disp').text(0); return;
+    $('#stat-no-disp').text(0);
+    return;
   }
 
-  total_todos = data.bomberos.length;
-  $('#stat-total').text(total_todos);
+  var total_todos = data.bomberos.length;
   $('#stat-no-disp').text(total_todos - disponibles);
-
-  var maxFotos = 24;
-  var a = 0;
-
-  $.each(data.bomberos, function(i, p) {
-    var slug  = estadoSlug(p.disponible);
-    var badge = BADGE_CLASE[slug] || 'pb-disponible';
-    var btext = BADGE_TEXT[slug] || 'Disponible';
-
-    var tieneFoto = (p.foto && p.foto.trim() !== '' && p.foto !== 'null');
-    var fotoHtml = (total_todos <= maxFotos && tieneFoto)
-      ? '<div style="width:100%; height:100%; background: url(\''+p.foto+'\') center top / cover no-repeat;"></div>'
-      : '<span class="persona-foto-ico">👤</span>';
-
-    $grid.append(
-      '<div class="persona-card" data-idx="'+a+'" onclick="cambiarEstado('+a+',\''+p.id_bombero+'\',\''+p.id_personas_extra+'\')">'+
-        '<div class="persona-foto">'+fotoHtml+'<div class="persona-sdot '+slug+'" id="sdot'+a+'"></div></div>'+
-        '<div class="persona-body">'+
-          '<div class="persona-nombre">'+p.nombre+'</div>'+
-          '<div class="persona-calidad">'+(p.calidad||'—')+'</div>'+
-          '<input type="hidden" id="estado'+a+'" value="'+p.disponible+'"/>'+
-          '<div class="persona-badge '+badge+'" id="pbadge'+a+'">'+btext+'</div>'+
-        '</div>'+
-      '</div>'
-    );
-    a++;
-  });
-
-  var vacios = Math.max(0, Math.min(8, maxFotos - total_todos));
-  for (var v = 0; v < vacios; v++) $grid.append('<div class="persona-vacia"></div>');
-  flashEl('div_gente_ui');
-}
-
-function cambiarEstado(i, id_bombero, id_personas_extra) {
-  if (!id_bombero || id_bombero === 'undefined') return;
-  var estado = ($('#estado'+i).val() * 1 + 1);
-  if (estado > 4) estado = 0;
-
-  var slug  = estadoSlug(estado);
-  $('#estado'+i).val(estado);
-  $('#sdot'+i).attr('class', 'persona-sdot '+slug);
-  $('#pbadge'+i).attr('class', 'persona-badge '+BADGE_CLASE[slug]).text(BADGE_TEXT[slug]);
-
-  $.getJSON('/api/cambiar_estado?id_bombero='+id_bombero+'&id_personas_extra='+id_personas_extra+'&estado='+estado)
-    .fail(function(){ console.warn('Error al cambiar estado'); });
+  flashEl('personal-container');
 }
 
 /* ════════════════════════════════════════
@@ -750,12 +629,15 @@ function renderCarros(carros) {
 
   $.each(carros, function(i, c) {
     var cls = claseEstadoCarro(c.estado_nombre);
+    // Formato especial para el conductor
+    var txtConductor = c.conductor && c.conductor.trim() !== '' ? ('con ' + c.conductor) : 'Sin conductor registrado';
+    
     $ui.append(
       '<div class="carro-card '+cls+'">'+
         '<div class="carro-id '+cls+'">'+c.nombre+'</div>'+
         '<div class="carro-info">'+
           '<div class="carro-estado '+cls+'">'+c.estado_nombre+'</div>'+
-          '<div class="carro-conductor">'+(c.conductor||'')+'</div>'+
+          '<div class="carro-conductor">'+txtConductor+'</div>'+
         '</div>'+
         '<div class="carro-dot '+cls+'"></div>'+
       '</div>'
