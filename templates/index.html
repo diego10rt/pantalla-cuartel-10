@@ -3,11 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>10ª Compañía — Dashboard Laboratorio</title>
+<title>10ª Compañía — Puesto de Mando</title>
 
 <script src="https://icbs.cl/cuartel/js/jquery-1.12.2.min.js"></script>
-<script src="https://icbs.cl/cuartel/libreria.js"></script>
-<script src="https://icbs.cl/cuartel/js/crypto-js.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
@@ -39,107 +37,36 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html, body {
-  width: 100%; height: 100%;
-  overflow: hidden;
-  background: var(--bg);
-  color: var(--text1);
-  font-family: var(--sans);
-}
-
-body::after {
-  content: '';
-  position: fixed; inset: 0;
-  background: repeating-linear-gradient(0deg, rgba(0,0,0,0.025) 0px, transparent 1px, transparent 4px);
-  pointer-events: none;
-  z-index: 9999;
-}
-
+html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text1); font-family: var(--sans); }
+body::after { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.025) 0px, transparent 1px, transparent 4px); pointer-events: none; z-index: 9999; }
 a { text-decoration: none; color: inherit; }
 
 /* ═══════════════════════════════════════
    LAYOUT
 ═══════════════════════════════════════ */
-#app {
-  display: grid;
-  grid-template-rows: 84px 1fr 34px;
-  grid-template-columns: 1fr 420px;
-  height: 100vh;
-}
+#app { display: grid; grid-template-rows: 84px 1fr 34px; grid-template-columns: 1fr 420px; height: 100vh; }
 
 /* ═══════════════════════════════════════
    HEADER
 ═══════════════════════════════════════ */
-#header {
-  grid-column: 1 / 3;
-  grid-row: 1;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 0 22px;
-  background: var(--bg2);
-  border-bottom: 1px solid var(--border2);
-  position: relative;
-  z-index: 100;
-}
-
-#header::after {
-  content: '';
-  position: absolute;
-  bottom: -2px; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, transparent 0%, var(--red) 20%, var(--red) 80%, transparent 100%);
-  opacity: 0.8;
-}
-
+#header { grid-column: 1 / 3; grid-row: 1; display: flex; align-items: center; gap: 16px; padding: 0 22px; background: var(--bg2); border-bottom: 1px solid var(--border2); position: relative; z-index: 100; }
+#header::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent 0%, var(--red) 20%, var(--red) 80%, transparent 100%); opacity: 0.8; }
 .brand { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
-.brand-badge {
-  width: 54px; height: 54px;
-  background: var(--red); border-radius: 9px;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--mono); font-size: 20px; font-weight: 700;
-  box-shadow: 0 0 18px var(--red-glow);
-}
+.brand-badge { width: 54px; height: 54px; background: var(--red); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 20px; font-weight: 700; box-shadow: 0 0 18px var(--red-glow); }
 .brand-text .line1 { font-size: 22px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.1; }
 .brand-text .line2 { font-size: 14px; color: var(--text2); letter-spacing: 2px; text-transform: uppercase; font-family: var(--mono); }
-
-#alert-bar {
-  flex: 1;
-  display: flex; align-items: center; gap: 16px;
-  background: linear-gradient(90deg, var(--red-dim), rgba(232,49,42,0.06));
-  border: 1px solid rgba(232,49,42,0.32);
-  border-radius: 8px;
-  padding: 8px 20px;
-  overflow: hidden; position: relative; min-width: 0;
-  transition: all 0.5s ease;
-}
-#alert-bar::before {
-  content: '';
-  position: absolute; left: -100%; top: 0; bottom: 0; width: 50%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
-  animation: sweep 4s linear infinite;
-}
+#alert-bar { flex: 1; display: flex; align-items: center; gap: 16px; background: linear-gradient(90deg, var(--red-dim), rgba(232,49,42,0.06)); border: 1px solid rgba(232,49,42,0.32); border-radius: 8px; padding: 8px 20px; overflow: hidden; position: relative; min-width: 0; transition: all 0.5s ease; }
+#alert-bar::before { content: ''; position: absolute; left: -100%; top: 0; bottom: 0; width: 50%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent); animation: sweep 4s linear infinite; }
 @keyframes sweep { to { left: 200%; } }
-
-.alert-code {
-  font-family: var(--mono); font-size: 38px; font-weight: 700;
-  color: var(--red); letter-spacing: 4px;
-  text-shadow: 0 0 16px var(--red-glow);
-  animation: blink-text 2.5s ease-in-out infinite;
-  flex-shrink: 0;
-  transition: all 0.5s ease;
-}
+.alert-code { font-family: var(--mono); font-size: 38px; font-weight: 700; color: var(--red); letter-spacing: 4px; text-shadow: 0 0 16px var(--red-glow); animation: blink-text 2.5s ease-in-out infinite; flex-shrink: 0; transition: all 0.5s ease; }
 @keyframes blink-text { 0%,100%{opacity:1} 50%{opacity:.6} }
-
 .alert-sep { width: 2px; height: 38px; background: rgba(232,49,42,0.28); flex-shrink: 0; transition: all 0.5s ease;}
 .alert-addr { font-size: 24px; font-weight: 600; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .alert-city { font-size: 16px; color: var(--red); font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; flex-shrink: 0; }
 .alert-units { display: flex; gap: 8px; margin-left: auto; flex-shrink: 0; }
-
 .ubadge { font-family: var(--mono); font-size: 16px; padding: 6px 12px; border-radius: 6px; font-weight: 700; letter-spacing: 1px; white-space: nowrap; }
 .ubadge.sale { background: var(--red); color: #fff; }
 .ubadge.blue { background: rgba(59,130,246,0.18); border: 1px solid rgba(59,130,246,0.45); color: #93c5fd; }
-
 .header-right { display: flex; align-items: center; gap: 24px; flex-shrink: 0; }
 .clima-blk { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.25; }
 .clima-temp { font-family: var(--mono); font-size: 30px; color: var(--amber); letter-spacing: 1px; }
@@ -147,79 +74,49 @@ a { text-decoration: none; color: inherit; }
 .clima-tag  { font-size: 13px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
 .clima-val  { font-family: var(--mono); font-size: 13px; color: var(--text2); }
 .clima-ico  { font-size: 20px; }
-
-.reloj {
-  font-family: var(--mono); font-size: 40px; letter-spacing: 4px; color: var(--text1);
-  border-left: 1px solid var(--border2); padding-left: 24px;
-}
+.reloj { font-family: var(--mono); font-size: 40px; letter-spacing: 4px; color: var(--text1); border-left: 1px solid var(--border2); padding-left: 24px; }
 
 /* ═══════════════════════════════════════
-   MAPA
+   MAPA Y RUTA
 ═══════════════════════════════════════ */
 #mapa-wrap { grid-column: 1; grid-row: 2; position: relative; overflow: hidden; }
 #map { width: 100%; height: 100%; }
-
 .leaflet-tile-pane { filter: brightness(.78) saturate(.55) hue-rotate(190deg); }
 .leaflet-container { background: #0e1420 !important; }
 .leaflet-control-zoom, .leaflet-control-attribution { display: none !important; }
-
 .map-overlay { position: absolute; top: 16px; left: 16px; z-index: 500; display: flex; flex-direction: column; gap: 8px; }
-
-.mstat {
-  background: rgba(8,9,13,0.9); border: 1px solid var(--border2);
-  border-radius: 8px; padding: 10px 16px;
-  backdrop-filter: blur(14px);
-  display: flex; align-items: center; gap: 12px;
-}
-
+.mstat { background: rgba(8,9,13,0.9); border: 1px solid var(--border2); border-radius: 8px; padding: 10px 16px; backdrop-filter: blur(14px); display: flex; align-items: center; gap: 12px; }
 .mstat-ico { width: 34px; height: 34px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
 .mstat-ico.r { background: var(--red-dim); }
 .mstat-ico.b { background: rgba(59,130,246,0.14); }
 .mstat-ico.g { background: rgba(34,197,94,0.14); }
-
 .mstat-lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 1.5px; font-family: var(--mono); }
 .mstat-val { font-size: 18px; font-weight: 700; color: var(--text1); margin-top: 2px;}
 .mstat-val.red   { color: var(--red); }
 .mstat-val.green { color: var(--green); }
 
+/* Ícono del Radar GPS */
+.car-tooltip { background: rgba(0,0,0,0.85); border: 1px solid var(--amber); color: var(--amber); font-family: var(--mono); font-weight: 700; border-radius: 4px; padding: 2px 6px; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+
 /* ═══════════════════════════════════════
    PANEL LATERAL
 ═══════════════════════════════════════ */
-#side {
-  grid-column: 2; grid-row: 2;
-  background: var(--bg2); border-left: 1px solid var(--border2);
-  display: flex; flex-direction: column; overflow: hidden;
-}
-
-.sec-hdr {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 18px; border-bottom: 1px solid var(--border);
-  background: rgba(255,255,255,0.012); flex-shrink: 0;
-}
+#side { grid-column: 2; grid-row: 2; background: var(--bg2); border-left: 1px solid var(--border2); display: flex; flex-direction: column; overflow: hidden; }
+.sec-hdr { display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.012); flex-shrink: 0; }
 .sec-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .sec-dot.r { background: var(--red);   box-shadow: 0 0 7px var(--red); }
 .sec-dot.g { background: var(--green); box-shadow: 0 0 7px var(--green); }
 .sec-dot.b { background: var(--blue);  box-shadow: 0 0 7px var(--blue); }
 .sec-dot.a { background: var(--amber); box-shadow: 0 0 7px var(--amber); animation: blink-dot 1.4s infinite; }
 @keyframes blink-dot { 0%,100%{opacity:1} 50%{opacity:.3} }
-
 .sec-title { font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text2); font-family: var(--mono); }
 .sec-count { margin-left: auto; font-family: var(--mono); font-size: 14px; color: var(--text3); }
 
 /* ── Carros ── */
 #carros-wrap { flex-shrink: 0; }
 #set_carros_ui { display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; }
-
-.carro-card {
-  background: var(--bg3); border: 1px solid var(--border);
-  border-radius: 8px; padding: 12px 14px;
-  display: flex; align-items: center; gap: 14px;
-  position: relative; overflow: hidden;
-  transition: all .2s;
-}
-.carro-card::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; border-radius: 8px 0 0 8px;
-}
+.carro-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; display: flex; align-items: center; gap: 14px; position: relative; overflow: hidden; transition: all .2s; }
+.carro-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; border-radius: 8px 0 0 8px; }
 .carro-card.verde::before  { background: var(--green); box-shadow: 2px 0 8px rgba(34,197,94,0.6); }
 .carro-card.rojo::before   { background: var(--red);   box-shadow: 2px 0 8px rgba(232,49,42,0.6); }
 .carro-card.naranja::before{ background: var(--amber); box-shadow: 2px 0 8px rgba(245,158,11,0.6); }
@@ -245,13 +142,7 @@ a { text-decoration: none; color: inherit; }
 .carro-estado.naranja{ color: var(--amber); }
 .carro-estado.celeste{ color: var(--cyan); }
 .carro-estado.gris   { color: var(--text3); }
-
-.carro-conductor { 
-  font-size: 13px; font-weight: 600; color: var(--text1); 
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
-  background: rgba(255,255,255,0.08); padding: 4px 8px; border-radius: 4px; 
-  display: inline-block; max-width: fit-content; border: 1px solid var(--border);
-}
+.carro-conductor { font-size: 13px; font-weight: 600; color: var(--text1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: rgba(255,255,255,0.08); padding: 4px 8px; border-radius: 4px; display: inline-block; max-width: fit-content; border: 1px solid var(--border); }
 
 .carro-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 .carro-dot.verde  { background: var(--green); box-shadow: 0 0 6px var(--green); animation: blink-dot 1.8s infinite; }
@@ -260,13 +151,9 @@ a { text-decoration: none; color: inherit; }
 .carro-dot.celeste{ background: var(--cyan);  box-shadow: 0 0 6px var(--cyan);  animation: blink-dot 1.6s infinite; }
 .carro-dot.gris   { background: var(--text3); }
 
-/* ── Personal (Reducido) ── */
+/* ── Personal ── */
 #personal-wrap { flex-shrink: 0; border-top: 1px solid var(--border); }
-
-.personal-stats {
-  display: flex; align-items: center; justify-content: space-around;
-  padding: 14px 18px;
-}
+.personal-stats { display: flex; align-items: center; justify-content: space-around; padding: 14px 18px; }
 .pstat { display: flex; align-items: baseline; gap: 8px; }
 .pstat-num { font-family: var(--mono); font-size: 34px; font-weight: 700; line-height: 1; }
 .pstat-num.g { color: var(--green); text-shadow: 0 0 10px rgba(34,197,94,0.3); }
@@ -274,40 +161,23 @@ a { text-decoration: none; color: inherit; }
 .pstat-lbl { font-size: 13px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
 .pstat-sep { width: 1px; height: 30px; background: var(--border); }
 
-/* ── Llamados (Ahora se expande) ── */
+/* ── Llamados Históricos y Métricas ── */
 #llamados-wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; border-top: 1px solid var(--border); }
 #set_llamados_ui { flex: 1; overflow-y: auto; padding: 10px 16px; display: flex; flex-direction: column; gap: 6px; scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
-
-.llamado-item {
-  display: flex; align-items: flex-start; gap: 12px;
-  padding: 10px 12px; background: var(--bg3); border: 1px solid var(--border);
-  border-radius: 6px; transition: all .15s;
-}
+.llamado-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; transition: all .15s; }
 .llamado-item:hover { background: var(--bg4); }
-.llamado-time { font-family: var(--mono); font-size: 12px; color: var(--text3); white-space: nowrap; padding-top: 2px; line-height: 1.5; }
+.llamado-time { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--text2); white-space: nowrap; padding-top: 2px; line-height: 1.5; }
 .llamado-det { flex: 1; min-width: 0; }
 .llamado-code { font-family: var(--mono); font-size: 16px; font-weight: 700; color: var(--red); letter-spacing: 1px; }
-.llamado-addr { font-size: 14px; color: var(--text2); margin-top: 2px; letter-spacing: .3px; }
+.llamado-addr { font-size: 14px; color: var(--text1); margin-top: 2px; letter-spacing: .3px; }
 .llamado-units { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
 .lunit { font-size: 12px; font-family: var(--mono); padding: 2px 6px; background: rgba(59,130,246,.12); border: 1px solid rgba(59,130,246,.28); color: #93c5fd; border-radius: 4px; }
-
-/* ── Novedades ── */
-#novedades-wrap { flex-shrink: 0; border-top: 1px solid var(--border); }
-#set_manual_ui { padding: 8px 16px 12px; display: flex; flex-direction: column; gap: 6px; }
-.novedad-item { display: flex; gap: 10px; padding: 8px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; }
-.novedad-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); margin-top: 6px; flex-shrink: 0; }
-.novedad-content { flex: 1; min-width: 0; }
-.novedad-fecha { font-family: var(--mono); font-size: 12px; color: var(--text3); }
-.novedad-texto { font-size: 14px; color: var(--text2); line-height: 1.45; margin-top: 2px; }
+.llamado-metric { font-size: 12px; color: var(--amber); margin-top: 6px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
 
 /* ═══════════════════════════════════════
    FOOTER
 ═══════════════════════════════════════ */
-#footer {
-  grid-column: 1 / 3; grid-row: 3;
-  background: var(--bg2); border-top: 1px solid var(--border);
-  display: flex; align-items: center; padding: 0 20px; gap: 24px;
-}
+#footer { grid-column: 1 / 3; grid-row: 3; background: var(--bg2); border-top: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; gap: 24px; }
 .fstat { display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 12px; color: var(--text3); letter-spacing: .5px; }
 .fdot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 .fdot.g { background: var(--green); }
@@ -316,32 +186,26 @@ a { text-decoration: none; color: inherit; }
 .fsep { width: 1px; height: 16px; background: var(--border); }
 #footer-fecha { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--text3); }
 #sse-status { transition: color .4s; }
-#sse-dot    { transition: background .4s; }
 
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 
-#msg-flotante { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 9998; padding: 14px; text-align: center; font-size: 26px; font-weight: 700; letter-spacing: 1px; color: #fff; }
 @keyframes flash-update { 0%{background:rgba(34,197,94,.25)} 100%{background:transparent} }
 .updated { animation: flash-update .8s ease; }
 </style>
 </head>
 <body>
 
-<div id="msg-flotante"></div>
-
 <div id="app">
-
   <header id="header">
     <div class="brand">
       <div class="brand-badge">10ª</div>
       <div class="brand-text">
         <div class="line1">Cuerpo de Bomberos · Santiago</div>
-        <div class="line2">SIAC · Central — Sistema Integrado</div>
+        <div class="line2">SIAC · Puesto de Mando (Koyeb)</div>
       </div>
     </div>
-
     <div id="alert-bar">
       <div class="alert-code" id="alerta-codigo">—</div>
       <div class="alert-sep" id="alerta-sep"></div>
@@ -349,7 +213,6 @@ a { text-decoration: none; color: inherit; }
       <div class="alert-city" id="alerta-ciudad"></div>
       <div class="alert-units" id="alerta-vehiculos"></div>
     </div>
-
     <div class="header-right">
       <div class="clima-blk">
         <div class="clima-temp"><span id="hdr-temp">—</span>°</div>
@@ -399,19 +262,13 @@ a { text-decoration: none; color: inherit; }
   </div>
 
   <aside id="side">
-
     <div id="carros-wrap">
       <div class="sec-hdr">
         <div class="sec-dot g"></div>
         <div class="sec-title">Carros en Servicio</div>
         <div class="sec-count" id="carros-count">—</div>
       </div>
-      <div id="set_carros_ui">
-        <div class="carro-card gris">
-          <div class="carro-id gris">—</div>
-          <div class="carro-info"><div class="carro-estado gris">Cargando…</div></div>
-        </div>
-      </div>
+      <div id="set_carros_ui"></div>
     </div>
 
     <div id="personal-wrap" id="personal-container">
@@ -429,39 +286,25 @@ a { text-decoration: none; color: inherit; }
     <div id="llamados-wrap">
       <div class="sec-hdr">
         <div class="sec-dot a"></div>
-        <div class="sec-title">Últimos Llamados</div>
+        <div class="sec-title">Historial Autónomo</div>
       </div>
       <div id="set_llamados_ui">
-        <div class="llamado-item"><div class="llamado-det" style="color:var(--text3);font-size:14px;">Cargando…</div></div>
+        <div class="llamado-item"><div class="llamado-det" style="color:var(--text3);font-size:14px;">Cargando historial maestro...</div></div>
       </div>
     </div>
-
-    <div id="novedades-wrap">
-      <div class="sec-hdr">
-        <div class="sec-dot b"></div>
-        <div class="sec-title">Novedades</div>
-      </div>
-      <div id="set_manual_ui">
-        <div class="novedad-item"><div class="novedad-texto" style="color:var(--text3);font-size:14px;">Cargando…</div></div>
-      </div>
-    </div>
-
   </aside>
 
   <footer id="footer">
-    <div class="fstat"><div class="fdot g"></div>SIAC</div>
+    <div class="fstat"><div class="fdot g"></div>SIAC (Personal)</div>
     <div class="fsep"></div>
-    <div class="fstat" id="fstat-emergencia"><div class="fdot g"></div>EN CUARTEL</div>
+    <div class="fstat" id="fstat-emergencia"><div class="fdot g"></div>CENTRAL</div>
     <div class="fsep"></div>
     <div class="fstat">
       <div class="fdot a" id="sse-dot"></div>
-      <span id="sse-status">CONECTANDO…</span>
+      <span id="sse-status">CONECTANDO AL RADAR…</span>
     </div>
-    <div class="fsep"></div>
-    <div class="fstat"><div class="fdot g"></div>GPS Central</div>
     <div id="footer-fecha"></div>
   </footer>
-
 </div>
 
 <script>
@@ -471,291 +314,184 @@ a { text-decoration: none; color: inherit; }
 const UNIDAD_LAT = -33.45798;
 const UNIDAD_LON = -70.641;
 
-/* ════════════════════════════════════════
-   UTILIDADES
-════════════════════════════════════════ */
 function pad2(n){ return n<10?'0'+n:''+n; }
-
-function claseEstadoCarro(estadoNombre) {
-  if (!estadoNombre) return 'gris';
-  var t = estadoNombre.toUpperCase();
-  
-  if (t.includes('FUERA')   || t.includes('NO DISP') ||
-      t.includes('INACTIV') || t.includes('TALLER'))        return 'rojo';
-  if (t.includes('LLAMADO') || t.includes('CURSO'))         return 'naranja';
-  if (t.includes('SERVICIO') || t.includes('DISPONIBLE'))   return 'verde';
-  
-  return 'gris';
-}
-
-function flashEl(id) {
-  var el = document.getElementById(id);
-  if (!el) return;
-  el.classList.remove('updated');
-  void el.offsetWidth;
-  el.classList.add('updated');
-}
+function flashEl(id) { var el = document.getElementById(id); if (!el) return; el.classList.remove('updated'); void el.offsetWidth; el.classList.add('updated'); }
 
 /* ════════════════════════════════════════
    RELOJ
 ════════════════════════════════════════ */
 const DIAS  = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-
 function tickReloj() {
   var now = new Date();
-  document.getElementById('reloj').textContent =
-    pad2(now.getHours())+':'+pad2(now.getMinutes())+':'+pad2(now.getSeconds());
-  document.getElementById('footer-fecha').textContent =
-    DIAS[now.getDay()]+' '+now.getDate()+' de '+MESES[now.getMonth()]+' de '+now.getFullYear();
+  document.getElementById('reloj').textContent = pad2(now.getHours())+':'+pad2(now.getMinutes())+':'+pad2(now.getSeconds());
+  document.getElementById('footer-fecha').textContent = DIAS[now.getDay()]+' '+now.getDate()+' de '+MESES[now.getMonth()]+' de '+now.getFullYear();
 }
-setInterval(tickReloj, 1000);
-tickReloj();
+setInterval(tickReloj, 1000); tickReloj();
 
 /* ════════════════════════════════════════
-   MAPA LEAFLET
+   MAPA Y RADAR GPS
 ════════════════════════════════════════ */
 var styleAnim = document.createElement('style');
 styleAnim.textContent = '@keyframes pmap{0%{box-shadow:0 0 0 5px rgba(232,49,42,0.5),0 0 28px rgba(232,49,42,0.9)}50%{box-shadow:0 0 0 18px rgba(232,49,42,0.03),0 0 40px rgba(232,49,42,0.4)}100%{box-shadow:0 0 0 5px rgba(232,49,42,0.5),0 0 28px rgba(232,49,42,0.9)}}';
 document.head.appendChild(styleAnim);
 
-var map = L.map('map', {
-  zoomControl: false, attributionControl: false,
-  dragging: true, scrollWheelZoom: true
-}).setView([UNIDAD_LAT, UNIDAD_LON], 15);
-
+var map = L.map('map', { zoomControl: false, attributionControl: false, dragging: true, scrollWheelZoom: true }).setView([UNIDAD_LAT, UNIDAD_LON], 15);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19 }).addTo(map);
 
-var icoBase = L.divIcon({
-  className: '',
-  iconSize:   [44, 44],
-  iconAnchor: [22, 44],
-  html: '<div style="width:40px;height:40px;background:#e8312a;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid rgba(255,255,255,0.6);box-shadow:0 0 20px rgba(232,49,42,0.8);display:flex;align-items:center;justify-content:center;"><span style="transform:rotate(45deg);font-size:18px;">🏠</span></div>'
-});
+var icoBase = L.divIcon({ className: '', iconSize: [44, 44], iconAnchor: [22, 44], html: '<div style="width:40px;height:40px;background:#e8312a;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid rgba(255,255,255,0.6);box-shadow:0 0 20px rgba(232,49,42,0.8);display:flex;align-items:center;justify-content:center;"><span style="transform:rotate(45deg);font-size:18px;">🏠</span></div>' });
+var icoEmerg = L.divIcon({ className: '', iconSize: [52, 52], iconAnchor: [26, 26], html: '<div style="width:48px;height:48px;background:#e8312a;border-radius:50%;border:3px solid #ffffff;box-shadow:0 0 0 5px rgba(232,49,42,0.4),0 0 30px rgba(232,49,42,0.9);display:flex;align-items:center;justify-content:center;animation:pmap 1.5s ease-in-out infinite;"><svg width=\'22\' height=\'22\' viewBox=\'0 0 24 24\' fill=\'white\'><path d=\'M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z\'/></svg></div>' });
+var icoGPS = L.divIcon({ className: '', iconSize: [28, 28], iconAnchor: [14, 14], html: '<div style="width:28px;height:28px;background:var(--amber);border:2px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 10px rgba(0,0,0,0.5);"><i class="fa fa-truck" style="color:#fff;font-size:12px;"></i></div>' });
 
-var icoEmerg = L.divIcon({
-  className: '',
-  iconSize:   [52, 52],
-  iconAnchor: [26, 26],
-  html: '<div style="width:48px;height:48px;background:#e8312a;border-radius:50%;border:3px solid #ffffff;box-shadow:0 0 0 5px rgba(232,49,42,0.4),0 0 30px rgba(232,49,42,0.9);display:flex;align-items:center;justify-content:center;animation:pmap 1.5s ease-in-out infinite;"><svg width=\'22\' height=\'22\' viewBox=\'0 0 24 24\' fill=\'white\'><path d=\'M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z\'/></svg></div>'
-});
-
-var markerBase  = L.marker([UNIDAD_LAT, UNIDAD_LON], {icon:icoBase}).addTo(map);
+var markerBase = L.marker([UNIDAD_LAT, UNIDAD_LON], {icon:icoBase}).addTo(map); markerBase.bindTooltip('10ª Compañía', {direction:'top', offset:[0,-30]});
 var markerEmerg = L.marker([UNIDAD_LAT, UNIDAD_LON], {icon:icoEmerg}).addTo(map);
-markerBase.bindTooltip('10ª Compañía', {direction:'top', offset:[0,-30]});
-
 var rutaMapa = L.polyline([], {color: '#e8312a', weight: 5, opacity: 1, lineCap: 'round', lineJoin: 'round'}).addTo(map);
 var rutaRespaldo = L.polyline([], {color: '#e8312a', weight: 4, opacity: 0.5, dashArray: '10, 8', lineCap: 'round'}).addTo(map);
 
 var ultimaPosMapa = '';
 var ultimaRutaKey = '';
+var carMarkers = {}; // Memoria de camiones en mapa
 
-function moverMapa(lat, lon, codigo, dir) {
+function moverMapaYRadar(lat, lon, codigo, dir, activa, carros) {
+  // 1. DIBUJAR RUTA Y EMERGENCIA
   var key = lat + ',' + lon;
-  if (key === ultimaPosMapa) return;
-  ultimaPosMapa = key;
+  if (key !== ultimaPosMapa) {
+    ultimaPosMapa = key;
+    markerEmerg.setLatLng([lat, lon]);
+    markerEmerg.bindTooltip(codigo + ' — ' + dir, {direction:'top', offset:[0,-14]});
+    rutaRespaldo.setLatLngs([[UNIDAD_LAT, UNIDAD_LON], [lat, lon]]);
+    rutaMapa.setLatLngs([]);
+    var bounds = L.latLngBounds([UNIDAD_LAT, UNIDAD_LON], [lat, lon]);
+    map.fitBounds(bounds, {padding: [80, 80], maxZoom: 16});
 
-  markerEmerg.setLatLng([lat, lon]);
-  markerEmerg.bindTooltip(codigo + ' — ' + dir, {direction:'top', offset:[0,-14]});
-
-  rutaRespaldo.setLatLngs([[UNIDAD_LAT, UNIDAD_LON], [lat, lon]]);
-  rutaMapa.setLatLngs([]);
-
-  var bounds = L.latLngBounds([UNIDAD_LAT, UNIDAD_LON], [lat, lon]);
-  map.fitBounds(bounds, {padding: [80, 80], maxZoom: 16});
-
-  if (lat === UNIDAD_LAT && lon === UNIDAD_LON) {
-     $('#ov-dist-wrap').hide();
-     return; 
+    if (lat === UNIDAD_LAT && lon === UNIDAD_LON) { $('#ov-dist-wrap').hide(); }
+    else {
+      fetch('https://router.project-osrm.org/route/v1/driving/' + UNIDAD_LON + ',' + UNIDAD_LAT + ';' + lon + ',' + lat + '?overview=full&geometries=geojson')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (!data || !data.routes || !data.routes.length) return;
+          var route = data.routes[0];
+          rutaMapa.setLatLngs(route.geometry.coordinates.map(function(c) { return [c[1], c[0]]; }));
+          rutaRespaldo.setLatLngs([]); 
+          $('#ov-dist').text((route.distance / 1000).toFixed(1) + ' km · ~' + Math.ceil(route.duration / 60) + ' min');
+          $('#ov-dist-wrap').show();
+          map.fitBounds(rutaMapa.getBounds(), {padding: [70, 70], maxZoom: 16});
+        }).catch(function(err) {});
+    }
   }
 
-  var rutaKey = UNIDAD_LAT + ',' + UNIDAD_LON + '>' + lat + ',' + lon;
-  if (rutaKey === ultimaRutaKey) return;
-  ultimaRutaKey = rutaKey;
+  // 2. RADAR GPS DE CARROS (Se borran si se acaba la emergencia o dan 6-10)
+  for (var k in carMarkers) map.removeLayer(carMarkers[k]);
+  carMarkers = {};
 
-  var osrmUrl = 'https://router.project-osrm.org/route/v1/driving/' + UNIDAD_LON + ',' + UNIDAD_LAT + ';' + lon + ',' + lat + '?overview=full&geometries=geojson';
-
-  fetch(osrmUrl)
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      if (!data || !data.routes || !data.routes.length) return;
-      var route  = data.routes[0];
-      var coords = route.geometry.coordinates.map(function(c) { return [c[1], c[0]]; });
-
-      rutaMapa.setLatLngs(coords);
-      rutaRespaldo.setLatLngs([]); 
-
-      var distKm  = (route.distance / 1000).toFixed(1);
-      var minutos = Math.ceil(route.duration / 60);
-      $('#ov-dist').text(distKm + ' km · ~' + minutos + ' min');
-      $('#ov-dist-wrap').show();
-      map.fitBounds(rutaMapa.getBounds(), {padding: [70, 70], maxZoom: 16});
-    }).catch(function(err) {});
+  if (activa && carros) {
+    carros.forEach(function(c) {
+      // Magia: Solo aparece si su color interno es "yellow" (En Llamado)
+      if (c.color_raw === 'yellow' && c.lat !== 0 && c.lon !== 0) {
+        var m = L.marker([c.lat, c.lon], {icon: icoGPS}).addTo(map);
+        m.bindTooltip(c.nombre, {permanent: true, direction: 'top', offset: [0, -10], className: 'car-tooltip'});
+        carMarkers[c.nombre] = m;
+      }
+    });
+  }
 }
 
 /* ════════════════════════════════════════
-   RENDER PERSONAL (Modificado: Sin fotos)
+   RENDER PERSONAL
 ════════════════════════════════════════ */
 function renderPersonal(data) {
-  var disponibles = parseInt(data.disponibles) || 0;
-  $('#stat-disponibles').text(disponibles);
-
-  if (typeof data.bomberos !== 'object' || !data.bomberos) {
-    $('#stat-no-disp').text(0);
-    return;
-  }
-
-  var total_todos = data.bomberos.length;
-  $('#stat-no-disp').text(total_todos - disponibles);
+  var disp = parseInt(data.disponibles) || 0;
+  $('#stat-disponibles').text(disp);
+  if (typeof data.bomberos !== 'object' || !data.bomberos) { $('#stat-no-disp').text(0); return; }
+  $('#stat-no-disp').text(data.bomberos.length - disp);
   flashEl('personal-container');
 }
 
 /* ════════════════════════════════════════
-   RENDER EMERGENCIA Y CENTRAL
+   RENDER EMERGENCIA TOTAL
 ════════════════════════════════════════ */
 function renderEmergencia(data) {
   renderCarros(data.carros);
-  renderLlamados(data.llamados, data.despacho_oficial);
-  renderNovedades(data.manual);
-}
-
-function renderCarros(carros) {
-  var $ui = $('#set_carros_ui');
-  $ui.html('');
-  if (!carros) { $('#carros-wrap').hide(); return; }
-  $('#carros-wrap').show();
-  var cantidad = Object.keys(carros).length;
-  $('#carros-count').text(cantidad + ' activos');
-
-  $.each(carros, function(i, c) {
-    var cls = claseEstadoCarro(c.estado_nombre);
-    // Formato especial para el conductor
-    var txtConductor = c.conductor && c.conductor.trim() !== '' ? ('con ' + c.conductor) : 'Sin conductor registrado';
-    
-    $ui.append(
-      '<div class="carro-card '+cls+'">'+
-        '<div class="carro-id '+cls+'">'+c.nombre+'</div>'+
-        '<div class="carro-info">'+
-          '<div class="carro-estado '+cls+'">'+c.estado_nombre+'</div>'+
-          '<div class="carro-conductor">'+txtConductor+'</div>'+
-        '</div>'+
-        '<div class="carro-dot '+cls+'"></div>'+
-      '</div>'
-    );
-  });
-  flashEl('set_carros_ui');
-}
-
-function parsearLlamado(texto) {
-  if (!texto) return {codigo:'', dir:'', unidades:''};
-  var partes = texto.split(' ');
-  var codigo = partes[0] || '';
-  var regexU = /([A-Z]+\d+(?:,\s*[A-Z]+\d+)*)$/;
-  var matchU = texto.match(regexU);
-  var unidades = '', dir = '';
-  if (matchU) {
-    unidades = matchU[1];
-    dir = texto.replace(codigo,'').replace(matchU[1],'').trim();
-  } else {
-    dir = texto.replace(codigo,'').trim();
-  }
-  return {codigo:codigo, dir:dir, unidades:unidades};
-}
-
-function renderLlamados(llamados, despacho) {
-  var $ui = $('#set_llamados_ui');
-  $ui.html('');
-
-  if (!llamados || llamados.length < 1) {
-    $ui.html('<div class="llamado-item"><div class="llamado-det" style="color:var(--text3);font-size:14px;">Sin llamados recientes</div></div>');
-    return;
-  }
-
-  var ul = parsearLlamado(llamados[0].texto);
-
-  var resto = llamados.slice(1);
-  if (resto.length === 0) {
-    $ui.html('<div class="llamado-item"><div class="llamado-det" style="color:var(--text3);font-size:14px;">Sin llamados anteriores</div></div>');
-  } else {
-    $.each(resto, function(i, l) {
-      var p = parsearLlamado(l.texto);
-      var badges = '';
-      if (p.unidades) {
-        p.unidades.split(',').forEach(function(u){ badges += '<span class="lunit">'+u.trim()+'</span>'; });
-      }
-      var fecha = l.fecha ? l.fecha.replace(' ','<br/>') : '—';
-      $ui.append(
-        '<div class="llamado-item">'+
-          '<div class="llamado-time">'+fecha+'</div>'+
-          '<div class="llamado-det">'+
-            '<div class="llamado-code">'+p.codigo+'</div>'+
-            '<div class="llamado-addr">'+p.dir+'</div>'+
-            (badges ? '<div class="llamado-units">'+badges+'</div>' : '')+
-          '</div>'+
-        '</div>'
-      );
-    });
-  }
-
+  renderLlamados(data.llamados);
+  
+  // Procesamiento Central
+  var despacho = data.despacho_oficial;
   if (despacho) {
     var showCode = despacho.codigo;
     var showDir = despacho.direccion;
     var showUnits = despacho.unidades;
 
-    if (!despacho.activa && despacho.codigo === '10-0' && ul && ul.codigo) {
-      showCode = ul.codigo;
-      showDir = ul.dir;
-      showUnits = ul.unidades;
+    // Si es standby, sacamos la info del nuevo historial en lugar del viejo scrapeo
+    if (!despacho.activa && despacho.codigo === '10-0' && data.llamados && data.llamados.length > 0) {
+      showCode = data.llamados[0].codigo;
+      showDir = data.llamados[0].direccion;
+      showUnits = data.llamados[0].unidades;
     }
 
-    $('#alerta-codigo').text(showCode);
-    $('#alerta-dir').html(showDir.replace(/\s*[y\/]\s*/g, ' / <br>'));
-    $('#ov-codigo').text(showCode);
-    $('#ov-dir').html(showDir.replace(/\s*[y\/]\s*/g, ' / <br>'));
+    $('#alerta-codigo').text(showCode); $('#ov-codigo').text(showCode);
+    $('#alerta-dir').html(showDir.replace(/\s*[y\/]\s*/g, ' / <br>')); $('#ov-dir').html(showDir.replace(/\s*[y\/]\s*/g, ' / <br>'));
     
-    var arrU = showUnits ? (showUnits.includes(',') ? showUnits.split(',') : showUnits.split(' ')) : [];
-    var validUnits = [];
-    arrU.forEach(function(x) { if(x.trim()) validUnits.push(x.trim()); });
-    
+    var validUnits = showUnits ? (showUnits.includes(',') ? showUnits.split(',') : showUnits.split(' ')).map(u => u.trim()).filter(u => u) : [];
     $('#ov-unidades').text(validUnits.length > 0 ? validUnits.length + ' carros' : '0 carros');
 
     var badgesHeader = '';
-    validUnits.forEach(function(u) {
-      var cls = u.endsWith('10') ? 'sale' : 'blue';
-      badgesHeader += '<span class="ubadge '+cls+'">'+u+'</span>';
-    });
+    validUnits.forEach(function(u) { badgesHeader += '<span class="ubadge ' + (u.endsWith('10') ? 'sale' : 'blue') + '">' + u + '</span>'; });
     $('#alerta-vehiculos').html(badgesHeader);
 
     if (despacho.activa) {
-      $('#alerta-codigo').css('animation', 'blink-text 2.5s ease-in-out infinite').css('color', 'var(--red)');
-      $('#alert-bar').css('opacity', '1').css('filter', 'none');
-      $('#alerta-sep').css('background', 'rgba(232,49,42,0.28)');
+      $('#alerta-codigo').css({'animation': 'blink-text 2.5s ease-in-out infinite', 'color': 'var(--red)'});
+      $('#alert-bar').css({'opacity': '1', 'filter': 'none'});
       $('#fstat-emergencia').html('<div class="fdot r"></div>EMERGENCIA ACTIVA');
     } else {
-      $('#alerta-codigo').css('animation', 'none').css('color', 'var(--text3)');
-      $('#alert-bar').css('opacity', '0.8').css('filter', 'grayscale(0.6)');
-      $('#alerta-sep').css('background', 'var(--border)');
+      $('#alerta-codigo').css({'animation': 'none', 'color': 'var(--text3)'});
+      $('#alert-bar').css({'opacity': '0.8', 'filter': 'grayscale(0.6)'});
       $('#fstat-emergencia').html('<div class="fdot g"></div>STANDBY - ÚLTIMO DESPACHO');
     }
 
-    if (despacho.lat && despacho.lon && (despacho.lat !== UNIDAD_LAT || despacho.lon !== UNIDAD_LON)) {
-      moverMapa(parseFloat(despacho.lat), parseFloat(despacho.lon), showCode, showDir);
-    } else {
-      $('#ov-dist-wrap').hide();
-    }
+    // Actualizar Mapa y Radar
+    moverMapaYRadar(parseFloat(despacho.lat), parseFloat(despacho.lon), showCode, showDir, despacho.activa, data.carros);
   }
 }
 
-function renderNovedades(manual) {
-  var $ui = $('#set_manual_ui');
-  $ui.html('');
-  if (!manual || manual.length < 1) {
-    $ui.html('<div class="novedad-item"><div class="novedad-texto" style="color:var(--text3);font-size:14px;">Sin novedades</div></div>');
-    return;
-  }
-  $.each(manual, function(i, m) {
+function renderCarros(carros) {
+  var $ui = $('#set_carros_ui'); $ui.html('');
+  if (!carros) return;
+  $('#carros-count').text(carros.length + ' activos');
+
+  $.each(carros, function(i, c) {
+    var cls = 'rojo'; // Por defecto fuera
+    if (c.estado_nombre === 'DISPONIBLE') cls = 'verde';
+    if (c.estado_nombre === 'EN LLAMADO') cls = 'naranja';
+
+    var txtConductor = c.conductor ? ('con ' + c.conductor) : 'Sin conductor';
     $ui.append(
-      '<div class="novedad-item"><div class="novedad-dot"></div><div class="novedad-content"><div class="novedad-fecha">'+(m.fecha||'')+'</div><div class="novedad-texto">'+(m.descripcion||'')+'</div></div></div>'
+      '<div class="carro-card '+cls+'"><div class="carro-id '+cls+'">'+c.nombre+'</div>'+
+      '<div class="carro-info"><div class="carro-estado '+cls+'">'+c.estado_nombre+'</div>'+
+      '<div class="carro-conductor">'+txtConductor+'</div></div><div class="carro-dot '+cls+'"></div></div>'
+    );
+  });
+  flashEl('set_carros_ui');
+}
+
+function renderLlamados(llamados) {
+  var $ui = $('#set_llamados_ui'); $ui.html('');
+  if (!llamados || llamados.length === 0) { $ui.html('<div class="llamado-item"><div class="llamado-det" style="color:var(--text3);font-size:14px;">Sin historial disponible</div></div>'); return; }
+
+  // Usamos el listado completo desde el 2do llamado para no repetir el de arriba
+  var resto = llamados.slice(1);
+  $.each(resto, function(i, l) {
+    var badges = '';
+    if (l.unidades) l.unidades.split(',').forEach(function(u){ badges += '<span class="lunit">'+u.trim()+'</span>'; });
+    
+    var mHtml = '';
+    if (l.tiempo_respuesta) {
+      mHtml = '<div class="llamado-metric"><i class="fa fa-stopwatch"></i> Tiempo Resp: ' + l.tiempo_respuesta + '</div>';
+    }
+
+    $ui.append(
+      '<div class="llamado-item"><div class="llamado-time">'+l.fecha+'</div><div class="llamado-det">'+
+      '<div class="llamado-code">'+l.codigo+'</div><div class="llamado-addr">'+l.direccion+'</div>'+
+      (badges ? '<div class="llamado-units">'+badges+'</div>' : '') + mHtml + '</div></div>'
     );
   });
 }
@@ -765,20 +501,15 @@ function renderNovedades(manual) {
 ════════════════════════════════════════ */
 function iniciarSSE() {
   var es = new EventSource('/api/stream');
-  es.addEventListener('open', function() { $('#sse-status').text('TIEMPO REAL'); });
+  es.addEventListener('open', function() { $('#sse-status').text('TIEMPO REAL CONECTADO'); $('#sse-dot').attr('class', 'fdot g'); });
   es.addEventListener('personal', function(e) { try { renderPersonal(JSON.parse(e.data)); } catch(ex) {} });
   es.addEventListener('emergencia', function(e) { try { renderEmergencia(JSON.parse(e.data)); } catch(ex) {} });
 }
 
 $(document).ready(function() {
   $.getJSON('/api/clima', function(d) {
-      try {
-        $('#hdr-temp').text(d.currentConditions.temp); $('#hdr-hum').text(d.currentConditions.humidity);
-        $('#hdr-min').text(d.days[0].tempmin); $('#hdr-max').text(d.days[0].tempmax);
-      } catch(e) {}
+      try { $('#hdr-temp').text(d.currentConditions.temp); $('#hdr-hum').text(d.currentConditions.humidity); $('#hdr-min').text(d.days[0].tempmin); $('#hdr-max').text(d.days[0].tempmax); } catch(e) {}
   });
-  $.getJSON('/api/personal', function(d){ renderPersonal(d); });
-  $.getJSON('/api/emergencia', function(d){ renderEmergencia(d); });
   iniciarSSE();
 });
 </script>
